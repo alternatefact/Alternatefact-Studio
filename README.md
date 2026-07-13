@@ -1,39 +1,29 @@
 # Alternatefact Studios — Website
 
-Dynamic portfolio site for Alternatefact Studios: AI short films, UGC, concept art and content production.
+Portfolio site for Alternatefact Studios: AI short films, UGC, concept art and content production.
 
-## The particle journey
+## Design
 
-The top of the site is a scroll-driven particle experience. Each artwork is sampled
-into ~14,000 colored particles on a `<canvas>`. As you scroll down, the current
-artwork disintegrates into drifting dust and the next one assembles; scrolling up
-plays it in reverse, re-forming the previous image. After the last artwork, the
-particles dissolve into an ambient starfield behind the rest of the page.
+Light, editorial "designer" aesthetic on a warm paper background:
 
-Scenes are configured on the `#journey` element in `index.html`:
-
-```html
-<div id="journey" style="height: 700vh;" data-scenes='[
-    {"src":"assets/awakening.jpg"},
-    {"src":"assets/beyond-lagos.jpg"},
-    {"src":"assets/concept-art.jpg"},
-    {"src":"assets/one-choice.jpg"}
-]'>
-```
-
-To add or swap artwork: drop an image in `assets/`, add it to `data-scenes`,
-add a matching `.chapter` caption block (with the next `data-chapter` number),
-and increase the `height` (roughly +140vh per scene).
-
-Dark, cinematic images work best — near-black pixels are skipped during sampling
-so the subject forms out of the void.
+- **Fonts** — Fraunces (display serif, with italic accents) + Manrope (body/UI), self-hosted.
+- **Machine engine background** — line-art gears and dashed flywheel rings drawn as
+  SVG in a fixed layer behind the page. They idle slowly and spin with scroll;
+  interlocking pairs turn in opposite directions. Configured via `data-gear` /
+  `data-ring` JSON on the `.gear-slot` elements inside `#machine-layer` in
+  `index.html` (`speed` = degrees per scrolled pixel, `idle` = degrees per second).
+- **Hero collage** — the studio's real artwork as tilted, overlapping cards with
+  per-card scroll parallax (`data-parallax` on `.collage-float`).
+- **Pinterest-style portfolio** — masonry columns (`columns-*` utilities) with
+  natural image heights, pill filters, and soft-shadow cards.
+- Scroll-reveal animations, animated counters, marquee strip, and pastel
+  tilted cards throughout. All motion respects `prefers-reduced-motion`.
 
 ## Fully self-contained
 
-No CDNs. Tailwind is compiled into `assets/tailwind.css`, fonts (Inter, Space
-Grotesk, Playfair Display) and Font Awesome are self-hosted under `assets/`.
-The site is pure static HTML/CSS/JS — host it anywhere (GitHub Pages, Netlify,
-Vercel, any web server).
+No CDNs. Tailwind is compiled into `assets/tailwind.css`; fonts and Font Awesome
+are self-hosted under `assets/`. Pure static HTML/CSS/JS — host anywhere
+(GitHub Pages, Netlify, Vercel, any web server).
 
 ### Rebuilding the Tailwind CSS
 
@@ -58,6 +48,3 @@ where `tw-input.css` contains:
 python3 -m http.server 8000
 # open http://localhost:8000
 ```
-
-(Serving over HTTP is required — the particle engine reads image pixels, which
-browsers block on `file://` URLs.)

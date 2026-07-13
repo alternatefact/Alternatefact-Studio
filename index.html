@@ -10,60 +10,39 @@
     <link rel="stylesheet" href="assets/fonts.css">
     <style>
         :root {
-            --primary: #a855f7;
-            --accent: #67e8f9;
+            --ink: #1c1917;
+            --paper: #faf8f5;
+            --violet: #7c3aed;
         }
 
         html { scroll-behavior: auto; }
 
         body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: #050508;
+            font-family: 'Manrope', system-ui, sans-serif;
+            background: var(--paper);
+            color: var(--ink);
         }
 
-        .heading-serif {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-weight: 700;
-            letter-spacing: -0.025em;
+        .font-display {
+            font-family: 'Fraunces', Georgia, serif;
+            letter-spacing: -0.02em;
+        }
+        .font-display em {
+            font-style: italic;
+            font-weight: 600;
         }
 
-        .font-grotesk { font-family: 'Space Grotesk', 'Inter', sans-serif; }
-
-        /* ---------- Particle canvas ---------- */
-        #fx-canvas {
+        /* ---------- Machine layer (scroll-driven engine) ---------- */
+        #machine-layer {
             position: fixed;
             inset: 0;
-            width: 100%;
-            height: 100%;
             z-index: 0;
             pointer-events: none;
-        }
-
-        /* ---------- Journey (scroll-scrubbed particle scenes) ---------- */
-        #journey { position: relative; }
-        .journey-stage {
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            height: 100dvh;
             overflow: hidden;
         }
-        .chapter {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            opacity: 0;
-            pointer-events: none;
-            will-change: opacity, transform;
-        }
-        .chapter.is-active { pointer-events: auto; }
-
-        .chapter-caption {
-            background: rgba(8, 8, 12, 0.55);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+        .gear-slot { position: absolute; }
+        .gear-slot svg { display: block; width: 100%; height: 100%; }
+        .gear-rotor { will-change: transform; transform-origin: center; }
 
         /* ---------- Scroll progress ---------- */
         #scroll-progress {
@@ -71,130 +50,109 @@
             top: 0; left: 0;
             height: 3px;
             width: 0%;
-            background: linear-gradient(to right, #a855f7, #67e8f9);
+            background: linear-gradient(to right, #7c3aed, #f59e0b);
             z-index: 60;
-            box-shadow: 0 0 12px rgba(168,85,247,0.6);
         }
 
         /* ---------- Reveal on scroll ---------- */
         .reveal {
             opacity: 0;
-            transform: translateY(42px);
+            transform: translateY(36px);
             transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .reveal.is-visible { opacity: 1; transform: translateY(0); }
-        .reveal-delay-1 { transition-delay: 0.12s; }
-        .reveal-delay-2 { transition-delay: 0.24s; }
-        .reveal-delay-3 { transition-delay: 0.36s; }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
 
         /* ---------- Marquee ---------- */
         .marquee-track {
             display: flex;
             width: max-content;
-            animation: marquee 26s linear infinite;
+            animation: marquee 30s linear infinite;
         }
         @keyframes marquee {
             from { transform: translateX(0); }
             to   { transform: translateX(-50%); }
         }
 
-        /* ---------- Glow orbs ---------- */
-        .orb {
+        /* ---------- Hero collage ---------- */
+        .collage-card {
             position: absolute;
-            border-radius: 9999px;
-            filter: blur(90px);
-            opacity: 0.35;
-            pointer-events: none;
-            animation: orb-float 14s ease-in-out infinite alternate;
-        }
-        @keyframes orb-float {
-            from { transform: translate3d(0, 0, 0) scale(1); }
-            to   { transform: translate3d(40px, -60px, 0) scale(1.15); }
-        }
-
-        /* ---------- Floating geometry (always-on ambient motion) ---------- */
-        .geo {
-            position: absolute;
-            pointer-events: none;
-            will-change: transform;
-            filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.55)) drop-shadow(0 0 20px rgba(103, 232, 249, 0.3));
-        }
-        .geo svg { width: 100%; height: 100%; display: block; }
-        .geo-a { animation: geo-drift-a 14s ease-in-out infinite alternate; }
-        .geo-b { animation: geo-drift-b 18s ease-in-out infinite alternate; }
-        .geo-c { animation: geo-drift-c 24s ease-in-out infinite alternate; }
-        .geo-spin { animation: geo-spin 38s linear infinite; }
-        @keyframes geo-drift-a {
-            from { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
-            to   { transform: translate3d(90px, -130px, 0) rotate(160deg) scale(1.22); }
-        }
-        @keyframes geo-drift-b {
-            from { transform: translate3d(0, 0, 0) rotate(25deg) scale(1.08); }
-            to   { transform: translate3d(-120px, 90px, 0) rotate(-140deg) scale(0.85); }
-        }
-        @keyframes geo-drift-c {
-            from { transform: translate3d(0, 40px, 0) rotate(-15deg); }
-            to   { transform: translate3d(60px, -160px, 0) rotate(110deg); }
-        }
-        @keyframes geo-spin {
-            from { transform: rotate(0deg); }
-            to   { transform: rotate(360deg); }
-        }
-
-        /* ---------- Cards ---------- */
-        .portfolio-card {
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease, border-color 0.4s ease;
+            border-radius: 1.5rem;
             overflow: hidden;
-            transform-style: preserve-3d;
+            box-shadow: 0 24px 60px -18px rgba(28, 25, 23, 0.35);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
+            will-change: transform;
         }
-        .portfolio-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 60px -12px rgba(168, 85, 247, 0.25);
-            border-color: rgba(168,85,247,0.5);
+        .collage-card img { display: block; width: 100%; height: 100%; object-fit: cover; }
+        .collage-card:hover { box-shadow: 0 32px 70px -16px rgba(124, 58, 237, 0.35); }
+        .collage-float { will-change: transform; }
+
+        /* ---------- Pinterest-style cards ---------- */
+        .pin-card {
+            break-inside: avoid;
+            border-radius: 1.75rem;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 10px 34px -14px rgba(28, 25, 23, 0.18);
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
         }
-        .portfolio-card img { transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), filter 0.7s ease; }
-        .portfolio-card:hover img { transform: scale(1.06); }
+        .pin-card:hover {
+            transform: translateY(-6px) rotate(-0.5deg);
+            box-shadow: 0 26px 54px -16px rgba(124, 58, 237, 0.28);
+        }
+        .pin-card img { transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); display: block; width: 100%; }
+        .pin-card:hover img { transform: scale(1.04); }
 
         .nav-link { position: relative; transition: color 0.2s ease; }
         .nav-link:after {
             content: '';
             position: absolute;
             width: 0; height: 2px;
-            bottom: -2px; left: 0;
-            background: linear-gradient(to right, #a855f7, #67e8f9);
+            bottom: -3px; left: 0;
+            background: linear-gradient(to right, #7c3aed, #f59e0b);
+            border-radius: 2px;
             transition: width 0.3s ease;
         }
         .nav-link:hover:after { width: 100%; }
 
-        .service-card { transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), border-color 0.3s ease, background 0.3s ease; }
-        .service-card:hover { transform: translateY(-6px); border-color: #a855f7; }
+        .soft-card {
+            transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s ease;
+        }
+        .soft-card:hover {
+            transform: translateY(-6px) rotate(0.4deg);
+            box-shadow: 0 24px 48px -18px rgba(28, 25, 23, 0.22);
+        }
 
         .modal { animation: modalPop 0.3s ease forwards; }
         @keyframes modalPop {
-            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            from { opacity: 0; transform: scale(0.96) translateY(16px); }
             to   { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .filter-btn { transition: all 0.2s ease; }
-        .filter-btn.active { background-color: #a855f7; color: white; border-color: #a855f7; }
-
-        .glass {
-            background: rgba(255,255,255, 0.04);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255, 0.1);
+        .filter-btn.active {
+            background-color: var(--ink);
+            color: #fff;
+            border-color: var(--ink);
         }
 
-        .portfolio-img { aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
+        .blob {
+            position: absolute;
+            border-radius: 9999px;
+            filter: blur(80px);
+            opacity: 0.5;
+            pointer-events: none;
+            animation: blob-float 16s ease-in-out infinite alternate;
+        }
+        @keyframes blob-float {
+            from { transform: translate3d(0, 0, 0) scale(1); }
+            to   { transform: translate3d(36px, -44px, 0) scale(1.12); }
+        }
 
         #modal-description p + p { margin-top: 1em; }
-        #modal-description em { color: #d8b4fe; }
-
-        .text-glow {
-            text-shadow: 0 0 24px rgba(168, 85, 247, 0.45), 0 0 60px rgba(103, 232, 249, 0.25);
-        }
-
-        .section-solid { position: relative; z-index: 10; background: rgba(7, 7, 11, 0.9); }
-        .section-solid-2 { position: relative; z-index: 10; background: rgba(13, 12, 20, 0.92); }
+        #modal-description em { color: #7c3aed; }
 
         .scroll-hint { animation: hint-bob 2s ease-in-out infinite; }
         @keyframes hint-bob {
@@ -202,62 +160,62 @@
             50% { transform: translateY(8px); opacity: 1; }
         }
 
-        /* Gradient border chip */
-        .grad-chip {
-            background: linear-gradient(#0a0a0f, #0a0a0f) padding-box,
-                        linear-gradient(120deg, rgba(168,85,247,0.7), rgba(103,232,249,0.7)) border-box;
-            border: 1px solid transparent;
-        }
-
         @media (prefers-reduced-motion: reduce) {
             .marquee-track { animation: none; }
-            .orb { animation: none; }
-            .geo { animation: none; }
+            .blob { animation: none; }
             .reveal { transition: none; opacity: 1; transform: none; }
         }
     </style>
 </head>
-<body class="bg-[#050508] text-white overflow-x-hidden">
+<body class="overflow-x-hidden antialiased">
     <div id="scroll-progress"></div>
 
-    <!-- Particle engine canvas (fixed, behind everything) -->
-    <canvas id="fx-canvas"></canvas>
+    <!-- Scroll-driven machine engine background -->
+    <div id="machine-layer" aria-hidden="true">
+        <div class="gear-slot" data-gear='{"r":150,"teeth":16,"speed":0.06,"idle":2.2,"color":"#ddd6fe","width":2}'   style="top:-70px;right:-60px;width:320px;height:320px;opacity:0.9;"></div>
+        <div class="gear-slot" data-gear='{"r":86,"teeth":10,"speed":-0.096,"idle":-3.5,"color":"#c4b5fd","width":2}' style="top:196px;right:196px;width:190px;height:190px;opacity:0.85;"></div>
+        <div class="gear-slot" data-gear='{"r":120,"teeth":14,"speed":-0.05,"idle":-1.8,"color":"#fde68a","width":2}' style="top:34%;left:-90px;width:260px;height:260px;opacity:0.9;"></div>
+        <div class="gear-slot" data-gear='{"r":66,"teeth":8,"speed":0.09,"idle":3.2,"color":"#ddd6fe","width":2}'    style="top:calc(34% + 208px);left:118px;width:150px;height:150px;opacity:0.85;"></div>
+        <div class="gear-slot" data-gear='{"r":110,"teeth":12,"speed":0.055,"idle":2,"color":"#c4b5fd","width":2}'   style="bottom:-60px;right:12%;width:240px;height:240px;opacity:0.85;"></div>
+        <div class="gear-slot" data-gear='{"r":58,"teeth":8,"speed":-0.1,"idle":-3.8,"color":"#fcd34d","width":2}'   style="bottom:118px;right:calc(12% + 178px);width:130px;height:130px;opacity:0.8;"></div>
+        <!-- dashed flywheel rings -->
+        <div class="gear-slot" data-ring='{"speed":0.03,"idle":1.2,"color":"#e9d5ff","width":2,"dash":"10 8"}' style="top:42%;right:6%;width:300px;height:300px;opacity:0.8;"></div>
+        <div class="gear-slot" data-ring='{"speed":-0.04,"idle":-1.6,"color":"#fde68a","width":2,"dash":"3 9"}' style="bottom:16%;left:4%;width:230px;height:230px;opacity:0.8;"></div>
+    </div>
 
     <!-- NAVBAR -->
     <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b border-transparent">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex items-center justify-between h-20">
-                <!-- Logo -->
                 <a href="#top" class="flex items-center gap-x-3">
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500 via-violet-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-purple-500/30">
-                        <span class="text-white font-bold text-xl tracking-tighter font-grotesk">AF</span>
+                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-600 to-amber-400 flex items-center justify-center shadow-lg shadow-violet-600/25">
+                        <span class="text-white font-extrabold text-lg tracking-tight">AF</span>
                     </div>
                     <div>
-                        <div class="font-bold text-xl tracking-tighter font-grotesk">ALTERNATEFACT</div>
-                        <div class="text-[10px] text-white/50 -mt-1 tracking-[4px]">STUDIOS</div>
+                        <div class="font-extrabold text-lg tracking-tight">ALTERNATEFACT</div>
+                        <div class="text-[10px] text-stone-500 -mt-1 tracking-[4px]">STUDIOS</div>
                     </div>
                 </a>
 
-                <!-- Desktop Nav -->
-                <div class="hidden md:flex items-center gap-x-9 text-sm font-medium">
-                    <a href="#about" class="nav-link text-white/80 hover:text-white">About</a>
-                    <a href="#services" class="nav-link text-white/80 hover:text-white">Services</a>
-                    <a href="#portfolio" class="nav-link text-white/80 hover:text-white">Portfolio</a>
-                    <a href="#process" class="nav-link text-white/80 hover:text-white">Process</a>
-                    <a href="#contact" class="nav-link text-white/80 hover:text-white">Contact</a>
+                <div class="hidden md:flex items-center gap-x-9 text-sm font-semibold text-stone-600">
+                    <a href="#about" class="nav-link hover:text-stone-900">About</a>
+                    <a href="#services" class="nav-link hover:text-stone-900">Services</a>
+                    <a href="#portfolio" class="nav-link hover:text-stone-900">Portfolio</a>
+                    <a href="#process" class="nav-link hover:text-stone-900">Process</a>
+                    <a href="#contact" class="nav-link hover:text-stone-900">Contact</a>
                 </div>
 
-                <div class="flex items-center gap-x-4">
+                <div class="flex items-center gap-x-3">
                     <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener"
-                       class="flex items-center justify-center w-10 h-10 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors">
+                       class="flex items-center justify-center w-10 h-10 rounded-2xl bg-white border border-stone-200 hover:border-violet-400 hover:text-violet-600 transition-colors shadow-sm">
                         <i class="fab fa-instagram text-xl"></i>
                     </a>
                     <a href="#contact"
-                       class="hidden md:block px-6 py-3 text-sm font-semibold bg-white text-zinc-950 rounded-3xl hover:bg-purple-100 transition-all active:scale-[0.985]">
+                       class="hidden md:block px-6 py-3 text-sm font-bold bg-stone-900 text-white rounded-full hover:bg-violet-700 transition-all active:scale-[0.98]">
                         Start a Project
                     </a>
                     <button id="mobile-menu-btn"
-                            class="md:hidden w-10 h-10 flex items-center justify-center text-white/80 hover:text-white">
+                            class="md:hidden w-10 h-10 flex items-center justify-center text-stone-700">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
@@ -265,204 +223,136 @@
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-white/10 bg-zinc-950/95 backdrop-blur-xl">
-            <div class="px-6 py-6 flex flex-col gap-y-4 text-lg">
-                <a href="#about" class="py-1 text-white/80 hover:text-white">About</a>
-                <a href="#services" class="py-1 text-white/80 hover:text-white">Services</a>
-                <a href="#portfolio" class="py-1 text-white/80 hover:text-white">Portfolio</a>
-                <a href="#process" class="py-1 text-white/80 hover:text-white">Process</a>
-                <a href="#contact" class="py-1 text-white/80 hover:text-white">Contact</a>
-                <a href="#contact" class="mt-2 px-6 py-3.5 text-center font-semibold bg-white text-zinc-950 rounded-3xl">Start a Project</a>
+        <div id="mobile-menu" class="hidden md:hidden border-t border-stone-200 bg-[#faf8f5]/95 backdrop-blur-xl">
+            <div class="px-6 py-6 flex flex-col gap-y-4 text-lg font-semibold text-stone-700">
+                <a href="#about" class="py-1">About</a>
+                <a href="#services" class="py-1">Services</a>
+                <a href="#portfolio" class="py-1">Portfolio</a>
+                <a href="#process" class="py-1">Process</a>
+                <a href="#contact" class="py-1">Contact</a>
+                <a href="#contact" class="mt-2 px-6 py-3.5 text-center font-bold bg-stone-900 text-white rounded-full">Start a Project</a>
             </div>
         </div>
     </nav>
 
-    <!-- ============ JOURNEY: scroll-scrubbed particle scenes ============ -->
-    <!-- Scroll down: each artwork disintegrates into particles and the next one forms. Scroll up: it reassembles. -->
-    <div id="journey" style="height: 700vh;" data-scenes='[
-        {"src":"assets/awakening.jpg"},
-        {"src":"assets/beyond-lagos.jpg"},
-        {"src":"assets/concept-art.jpg"},
-        {"src":"assets/one-choice.jpg"}
-    ]'>
-        <div class="journey-stage" id="journey-stage">
+    <!-- HERO -->
+    <header class="relative min-h-screen flex items-center pt-28 pb-16 overflow-hidden">
+        <div class="blob w-96 h-96 bg-violet-200 -left-24 top-16"></div>
+        <div class="blob w-80 h-80 bg-amber-100 right-10 bottom-10" style="animation-delay:-8s;"></div>
 
-            <!-- Always-moving ambient geometry -->
-            <div class="geo geo-a" style="width:230px;height:230px;left:5%;top:12%;opacity:0.34;">
-                <svg viewBox="0 0 100 100"><polygon points="50,3 93,26 93,74 50,97 7,74 7,26" fill="none" stroke="#a855f7" stroke-width="1.6"/></svg>
-            </div>
-            <div class="geo geo-b" style="width:140px;height:140px;right:9%;top:20%;opacity:0.38;">
-                <svg viewBox="0 0 100 100"><polygon points="50,3 93,26 93,74 50,97 7,74 7,26" fill="none" stroke="#67e8f9" stroke-width="1.8"/></svg>
-            </div>
-            <div class="geo geo-c" style="width:340px;height:340px;right:-80px;bottom:10%;opacity:0.22;">
-                <svg viewBox="0 0 100 100"><polygon points="50,3 93,26 93,74 50,97 7,74 7,26" fill="none" stroke="#a855f7" stroke-width="1.1"/></svg>
-            </div>
-            <div class="geo geo-spin" style="width:420px;height:420px;left:-120px;bottom:-100px;opacity:0.26;">
-                <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="none" stroke="#67e8f9" stroke-width="0.9" stroke-dasharray="6 5"/></svg>
-            </div>
-            <div class="geo geo-b" style="width:90px;height:90px;left:20%;bottom:22%;opacity:0.4;animation-duration:12s;">
-                <svg viewBox="0 0 100 100"><polygon points="50,6 94,84 6,84" fill="none" stroke="#c084fc" stroke-width="2"/></svg>
-            </div>
-            <div class="geo geo-c" style="width:120px;height:120px;left:38%;top:8%;opacity:0.3;animation-duration:16s;">
-                <svg viewBox="0 0 100 100"><rect x="14" y="14" width="72" height="72" rx="10" fill="none" stroke="#67e8f9" stroke-width="1.4" transform="rotate(20 50 50)"/></svg>
-            </div>
-            <div class="geo geo-a" style="width:70px;height:70px;right:26%;bottom:14%;opacity:0.42;animation-duration:11s;">
-                <svg viewBox="0 0 100 100"><polygon points="50,3 93,26 93,74 50,97 7,74 7,26" fill="none" stroke="#e879f9" stroke-width="2.2"/></svg>
-            </div>
-            <div class="geo geo-spin" style="width:170px;height:170px;right:4%;top:52%;opacity:0.3;animation-duration:26s;">
-                <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#a855f7" stroke-width="1" stroke-dasharray="2 7"/></svg>
-            </div>
-
-            <!-- CHAPTER 0 : HERO -->
-            <section class="chapter items-center justify-center" data-chapter="0">
-                <div class="max-w-5xl mx-auto px-6 text-center relative z-10 pt-20">
-                    <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-full grad-chip mb-6">
-                        <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                        <span class="text-xs md:text-sm font-medium tracking-wider text-white/80">AI-POWERED CREATIVE STUDIO • FRANKFURT / GLOBAL</span>
-                    </div>
-
-                    <h1 class="text-6xl md:text-8xl lg:text-[96px] leading-[0.92] font-bold tracking-tighter mb-6 font-grotesk">
-                        We craft<br>
-                        <span class="bg-gradient-to-r from-purple-400 via-violet-400 to-cyan-300 bg-clip-text text-transparent text-glow">alternate realities</span>
-                    </h1>
-
-                    <p class="max-w-2xl mx-auto text-xl md:text-2xl text-white/70 tracking-tight mb-10">
-                        AI short films. UGC. Concept art. Scroll-stopping content.<br class="hidden md:block">
-                        <span class="text-white/50">Keep scrolling — our work dissolves into particles and rebuilds itself.</span>
-                    </p>
-
-                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <a href="#portfolio"
-                           class="group px-9 py-4 bg-white text-zinc-950 font-semibold rounded-3xl flex items-center justify-center gap-x-3 hover:bg-purple-50 transition-all text-lg active:scale-[0.985]">
-                            Explore Our Work
-                            <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i>
-                        </a>
-                        <a href="#contact"
-                           class="px-9 py-4 border border-white/30 hover:bg-white/5 font-semibold rounded-3xl flex items-center justify-center gap-x-3 transition-all text-lg backdrop-blur">
-                            Start a Project
-                        </a>
-                    </div>
-
-                    <div class="mt-12 flex justify-center gap-x-10 text-sm">
-                        <div class="text-center">
-                            <div class="font-mono text-3xl font-semibold tracking-tighter counter" data-target="120" data-suffix="+">0</div>
-                            <div class="text-white/50 text-[10px] md:text-xs tracking-widest mt-1">PROJECTS DELIVERED</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="font-mono text-3xl font-semibold tracking-tighter counter" data-target="40" data-suffix="+">0</div>
-                            <div class="text-white/50 text-[10px] md:text-xs tracking-widest mt-1">BRANDS PARTNERED</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="font-mono text-3xl font-semibold tracking-tighter counter" data-target="15" data-suffix="M+">0</div>
-                            <div class="text-white/50 text-[10px] md:text-xs tracking-widest mt-1">VIEWS GENERATED</div>
-                        </div>
-                    </div>
+        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-14 items-center relative z-10">
+            <div>
+                <div class="inline-flex items-center gap-x-2 px-4 py-2 rounded-full bg-white border border-stone-200 shadow-sm mb-8 reveal is-visible">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                    <span class="text-xs font-bold tracking-[2px] text-stone-500">AI-POWERED CREATIVE STUDIO • FRANKFURT / GLOBAL</span>
                 </div>
 
-                <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-y-1 text-[10px] tracking-[3px] text-white/50 scroll-hint">
-                    <div>SCROLL TO DISSOLVE</div>
-                    <i class="fas fa-chevron-down text-lg"></i>
-                </div>
-            </section>
+                <h1 class="font-display text-6xl md:text-7xl xl:text-8xl leading-[1.02] mb-7">
+                    We craft<br><em class="text-violet-700">alternate</em> realities.
+                </h1>
 
-            <!-- CHAPTER 1 -->
-            <section class="chapter items-end md:items-center" data-chapter="1">
-                <div class="w-full max-w-7xl mx-auto px-6 pb-24 md:pb-0">
-                    <div class="chapter-caption max-w-md rounded-3xl p-7 md:p-9">
-                        <div class="text-[10px] tracking-[4px] text-purple-400 font-semibold mb-3">AI SHORT FILM — 01</div>
-                        <h3 class="font-grotesk text-4xl md:text-5xl font-bold tracking-tighter mb-3">The Awakening</h3>
-                        <p class="text-white/70 leading-relaxed">"Some powers were never meant to sleep." A cinematic creature feature born entirely from our AI pipeline — every frame generated, graded and cut in-house.</p>
-                        <div class="mt-5 text-xs tracking-widest text-white/40">A FILM BY OLUKAYODE • ALTERNATEFACT STUDIOS</div>
+                <p class="max-w-md text-lg md:text-xl text-stone-600 leading-relaxed mb-9">
+                    AI short films, UGC, concept art &amp; scroll-stopping content —
+                    engineered frame by frame in our studio.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#portfolio"
+                       class="group px-9 py-4 bg-stone-900 text-white font-bold rounded-full flex items-center justify-center gap-x-3 hover:bg-violet-700 transition-all text-lg active:scale-[0.98]">
+                        Explore Our Work
+                        <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i>
+                    </a>
+                    <a href="#contact"
+                       class="px-9 py-4 bg-white border border-stone-300 hover:border-violet-500 hover:text-violet-700 font-bold rounded-full flex items-center justify-center transition-all text-lg">
+                        Start a Project
+                    </a>
+                </div>
+
+                <div class="mt-12 flex gap-x-10">
+                    <div>
+                        <div class="font-display text-4xl font-semibold counter" data-target="120" data-suffix="+">0</div>
+                        <div class="text-stone-500 text-xs font-bold tracking-[2px] mt-1">PROJECTS</div>
+                    </div>
+                    <div>
+                        <div class="font-display text-4xl font-semibold counter" data-target="40" data-suffix="+">0</div>
+                        <div class="text-stone-500 text-xs font-bold tracking-[2px] mt-1">BRANDS</div>
+                    </div>
+                    <div>
+                        <div class="font-display text-4xl font-semibold counter" data-target="15" data-suffix="M+">0</div>
+                        <div class="text-stone-500 text-xs font-bold tracking-[2px] mt-1">VIEWS</div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <!-- CHAPTER 2 -->
-            <section class="chapter items-end md:items-center justify-end" data-chapter="2">
-                <div class="w-full max-w-7xl mx-auto px-6 pb-24 md:pb-0 flex md:justify-end">
-                    <div class="chapter-caption max-w-md rounded-3xl p-7 md:p-9">
-                        <div class="text-[10px] tracking-[4px] text-cyan-300 font-semibold mb-3">AI SHORT FILM — 02</div>
-                        <h3 class="font-grotesk text-4xl md:text-5xl font-bold tracking-tighter mb-3">Beyond Lagos</h3>
-                        <p class="text-white/70 leading-relaxed">"Some dreams don't end at the horizon." An Afro-futurist space epic — African stories, launched past the stratosphere.</p>
-                        <div class="mt-5 text-xs tracking-widest text-white/40">AFRICAN FUTURES • COMING SOON</div>
+            <!-- Collage of real work, Pinterest-board style -->
+            <div class="relative h-[420px] sm:h-[520px] lg:h-[600px]">
+                <div class="collage-float absolute inset-0" data-parallax="-0.04">
+                    <div class="collage-card w-[58%] top-0 left-0" style="transform: rotate(-5deg);">
+                        <img src="assets/awakening.jpg" alt="The Awakening — AI short film">
                     </div>
                 </div>
-            </section>
-
-            <!-- CHAPTER 3 -->
-            <section class="chapter items-end md:items-center" data-chapter="3">
-                <div class="w-full max-w-7xl mx-auto px-6 pb-24 md:pb-0">
-                    <div class="chapter-caption max-w-md rounded-3xl p-7 md:p-9">
-                        <div class="text-[10px] tracking-[4px] text-purple-400 font-semibold mb-3">CONCEPT ART</div>
-                        <h3 class="font-grotesk text-4xl md:text-5xl font-bold tracking-tighter mb-3">Adorned</h3>
-                        <p class="text-white/70 leading-relaxed">Character &amp; world design from our concept-art practice — couture-level detail, impossible materials, real emotion.</p>
-                        <div class="mt-5 text-xs tracking-widest text-white/40">CONCEPT SERIES • 2025</div>
+                <div class="collage-float absolute inset-0" data-parallax="0.055">
+                    <div class="collage-card w-[38%] top-[8%] right-0" style="transform: rotate(4deg);">
+                        <img src="assets/beyond-lagos.jpg" alt="Beyond Lagos — AI short film">
                     </div>
                 </div>
-            </section>
-
-            <!-- CHAPTER 4 -->
-            <section class="chapter items-end md:items-center justify-end" data-chapter="4">
-                <div class="w-full max-w-7xl mx-auto px-6 pb-24 md:pb-0 flex md:justify-end">
-                    <div class="chapter-caption max-w-md rounded-3xl p-7 md:p-9">
-                        <div class="text-[10px] tracking-[4px] text-cyan-300 font-semibold mb-3">CAMPAIGN ART</div>
-                        <h3 class="font-grotesk text-4xl md:text-5xl font-bold tracking-tighter mb-3">One Choice</h3>
-                        <p class="text-white/70 leading-relaxed">Purpose-driven visual campaigns. Art direction that stops the scroll and carries a message that matters.</p>
-                        <div class="mt-5 text-xs tracking-widest text-white/40">PUBLIC AWARENESS CAMPAIGN</div>
+                <div class="collage-float absolute inset-0" data-parallax="0.03">
+                    <div class="collage-card w-[46%] bottom-0 left-[4%]" style="transform: rotate(3deg);">
+                        <img src="assets/concept-art.jpg" alt="Adorned — concept art">
                     </div>
                 </div>
-            </section>
+                <div class="collage-float absolute inset-0" data-parallax="-0.05">
+                    <div class="collage-card w-[30%] bottom-[6%] right-[10%]" style="transform: rotate(-6deg);">
+                        <img src="assets/one-choice.jpg" alt="One Choice — campaign art">
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-y-1 text-[10px] font-bold tracking-[3px] text-stone-400 scroll-hint">
+            <div>SCROLL</div>
+            <i class="fas fa-chevron-down text-lg"></i>
+        </div>
+    </header>
 
     <!-- MARQUEE STRIP -->
-    <div class="section-solid border-y border-white/10 py-5 overflow-hidden relative">
-        <div class="marquee-track font-grotesk text-lg md:text-2xl font-bold tracking-tight text-white/40">
+    <div class="relative z-10 border-y border-stone-200 bg-white/70 backdrop-blur py-5 overflow-hidden">
+        <div class="marquee-track font-display text-xl md:text-2xl font-medium text-stone-400">
             <div class="flex items-center gap-x-8 pr-8">
-                <span>AI SHORT FILMS</span><span class="text-purple-500">✦</span>
-                <span>UGC CREATION</span><span class="text-cyan-400">✦</span>
-                <span>CONCEPT ART</span><span class="text-purple-500">✦</span>
-                <span>CONTENT PRODUCTION</span><span class="text-cyan-400">✦</span>
-                <span>ALTERNATEFACT STUDIOS</span><span class="text-purple-500">✦</span>
+                <span>AI Short Films</span><span class="text-violet-500">✦</span>
+                <span>UGC Creation</span><span class="text-amber-500">✦</span>
+                <span>Concept Art</span><span class="text-violet-500">✦</span>
+                <span>Content Production</span><span class="text-amber-500">✦</span>
+                <span><em>Alternatefact Studios</em></span><span class="text-violet-500">✦</span>
             </div>
             <div class="flex items-center gap-x-8 pr-8" aria-hidden="true">
-                <span>AI SHORT FILMS</span><span class="text-purple-500">✦</span>
-                <span>UGC CREATION</span><span class="text-cyan-400">✦</span>
-                <span>CONCEPT ART</span><span class="text-purple-500">✦</span>
-                <span>CONTENT PRODUCTION</span><span class="text-cyan-400">✦</span>
-                <span>ALTERNATEFACT STUDIOS</span><span class="text-purple-500">✦</span>
+                <span>AI Short Films</span><span class="text-violet-500">✦</span>
+                <span>UGC Creation</span><span class="text-amber-500">✦</span>
+                <span>Concept Art</span><span class="text-violet-500">✦</span>
+                <span>Content Production</span><span class="text-amber-500">✦</span>
+                <span><em>Alternatefact Studios</em></span><span class="text-violet-500">✦</span>
             </div>
         </div>
     </div>
 
     <!-- ABOUT -->
-    <section id="about" class="section-solid overflow-hidden">
-        <div class="orb w-96 h-96 bg-purple-600 -left-32 top-20"></div>
-        <div class="geo geo-a" style="width:280px;height:280px;right:2%;top:8%;opacity:0.24;">
-            <svg viewBox="0 0 100 100"><polygon points="50,3 93,26 93,74 50,97 7,74 7,26" fill="none" stroke="#a855f7" stroke-width="1.3"/></svg>
-        </div>
-        <div class="geo geo-b" style="width:110px;height:110px;right:15%;bottom:12%;opacity:0.32;">
-            <svg viewBox="0 0 100 100"><polygon points="50,3 93,26 93,74 50,97 7,74 7,26" fill="none" stroke="#67e8f9" stroke-width="1.8"/></svg>
-        </div>
-        <div class="geo geo-spin" style="width:200px;height:200px;left:-40px;bottom:-30px;opacity:0.24;animation-duration:30s;">
-            <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#67e8f9" stroke-width="0.9" stroke-dasharray="5 6"/></svg>
-        </div>
-        <div class="max-w-5xl mx-auto px-6 pt-24 pb-20 relative">
-            <div class="grid md:grid-cols-12 gap-x-12 items-center">
+    <section id="about" class="relative z-10 overflow-hidden">
+        <div class="max-w-6xl mx-auto px-6 pt-28 pb-24">
+            <div class="grid md:grid-cols-12 gap-x-14 items-center">
                 <div class="md:col-span-7">
-                    <div class="uppercase tracking-[3px] text-purple-400 text-sm font-semibold mb-3 reveal">WHO WE ARE</div>
-                    <h2 class="heading-serif text-5xl md:text-7xl leading-none tracking-tighter mb-8 reveal reveal-delay-1">
-                        An AI studio<br>redefining<br>what's possible.
+                    <div class="uppercase tracking-[3px] text-violet-600 text-sm font-extrabold mb-4 reveal">WHO WE ARE</div>
+                    <h2 class="font-display text-5xl md:text-6xl xl:text-7xl leading-[1.04] mb-8 reveal reveal-delay-1">
+                        An AI studio<br>redefining <em>what's possible.</em>
                     </h2>
 
-                    <div class="max-w-2xl text-lg md:text-xl text-white/70 leading-relaxed space-y-6 reveal reveal-delay-2">
+                    <div class="max-w-xl text-lg md:text-xl text-stone-600 leading-relaxed space-y-6 reveal reveal-delay-2">
                         <p>Alternatefact Studios is a next-generation creative production house that harnesses the power of advanced AI to create breathtaking short films, authentic user-generated content, striking concept art, and high-performing social content.</p>
                         <p>We believe AI isn't just a tool — it's a new creative medium. Our team of directors, storytellers, and technologists blend cinematic craft with cutting-edge generative models to deliver work that feels both futuristic and deeply human.</p>
                     </div>
 
-                    <div class="mt-8 flex items-center gap-x-4 reveal reveal-delay-3">
+                    <div class="mt-8 reveal reveal-delay-3">
                         <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener"
-                           class="inline-flex items-center gap-x-2 text-purple-400 hover:text-purple-300 font-medium">
+                           class="inline-flex items-center gap-x-2 text-violet-700 hover:text-violet-500 font-bold">
                             <i class="fab fa-instagram"></i>
                             <span>Follow us on Instagram</span>
                         </a>
@@ -470,24 +360,22 @@
                 </div>
 
                 <div class="md:col-span-5 mt-12 md:mt-0 reveal reveal-delay-2">
-                    <div class="glass rounded-3xl p-8 md:p-10">
-                        <div class="grid grid-cols-2 gap-6">
-                            <div>
-                                <div class="text-4xl md:text-5xl font-bold tracking-tighter font-grotesk">2024</div>
-                                <div class="text-white/60 mt-1">Founded</div>
-                            </div>
-                            <div>
-                                <div class="text-4xl md:text-5xl font-bold tracking-tighter font-grotesk">Global</div>
-                                <div class="text-white/60 mt-1">Remote-first team</div>
-                            </div>
-                            <div>
-                                <div class="text-4xl md:text-5xl font-bold tracking-tighter font-grotesk">AI-first</div>
-                                <div class="text-white/60 mt-1">Production pipeline</div>
-                            </div>
-                            <div>
-                                <div class="text-4xl md:text-5xl font-bold tracking-tighter font-grotesk">100%</div>
-                                <div class="text-white/60 mt-1">Client satisfaction</div>
-                            </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="soft-card bg-violet-50 rounded-[1.75rem] p-7 rotate-[-1deg]">
+                            <div class="font-display text-4xl font-semibold">2024</div>
+                            <div class="text-stone-500 mt-1 font-semibold">Founded</div>
+                        </div>
+                        <div class="soft-card bg-amber-50 rounded-[1.75rem] p-7 rotate-[1.5deg] mt-6">
+                            <div class="font-display text-4xl font-semibold">Global</div>
+                            <div class="text-stone-500 mt-1 font-semibold">Remote-first team</div>
+                        </div>
+                        <div class="soft-card bg-rose-50 rounded-[1.75rem] p-7 rotate-[1deg]">
+                            <div class="font-display text-4xl font-semibold">AI-first</div>
+                            <div class="text-stone-500 mt-1 font-semibold">Production pipeline</div>
+                        </div>
+                        <div class="soft-card bg-sky-50 rounded-[1.75rem] p-7 rotate-[-1.5deg] mt-6">
+                            <div class="font-display text-4xl font-semibold">100%</div>
+                            <div class="text-stone-500 mt-1 font-semibold">Client satisfaction</div>
                         </div>
                     </div>
                 </div>
@@ -496,183 +384,148 @@
     </section>
 
     <!-- SERVICES -->
-    <section id="services" class="section-solid-2 py-20 overflow-hidden">
-        <div class="orb w-96 h-96 bg-cyan-500 -right-32 bottom-0" style="animation-delay: -7s;"></div>
-        <div class="geo geo-c" style="width:250px;height:250px;left:2%;top:6%;opacity:0.24;">
-            <svg viewBox="0 0 100 100"><polygon points="50,3 93,26 93,74 50,97 7,74 7,26" fill="none" stroke="#67e8f9" stroke-width="1.2"/></svg>
-        </div>
-        <div class="geo geo-spin" style="width:320px;height:320px;right:4%;top:34%;opacity:0.2;">
-            <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="47" fill="none" stroke="#a855f7" stroke-width="0.9" stroke-dasharray="4 6"/></svg>
-        </div>
-        <div class="geo geo-a" style="width:100px;height:100px;left:30%;bottom:6%;opacity:0.34;animation-duration:13s;">
-            <svg viewBox="0 0 100 100"><polygon points="50,6 94,84 6,84" fill="none" stroke="#e879f9" stroke-width="1.9"/></svg>
-        </div>
-        <div class="max-w-7xl mx-auto px-6 relative">
-            <div class="text-center mb-14">
-                <div class="uppercase tracking-[3px] text-purple-400 text-sm font-semibold mb-3 reveal">WHAT WE DO</div>
-                <h2 class="heading-serif text-5xl md:text-6xl tracking-tighter reveal reveal-delay-1">Four pillars.<br>One vision.</h2>
+    <section id="services" class="relative z-10 py-24 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="uppercase tracking-[3px] text-violet-600 text-sm font-extrabold mb-4 reveal">WHAT WE DO</div>
+                <h2 class="font-display text-5xl md:text-6xl leading-tight reveal reveal-delay-1">Four pillars. <em>One vision.</em></h2>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="service-card group bg-zinc-950/80 border border-white/10 rounded-3xl p-8 reveal">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-purple-500/10 text-purple-400 mb-8 group-hover:bg-purple-500/20 transition">
-                        <i class="fas fa-film text-3xl"></i>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
+                <div class="soft-card bg-violet-50 rounded-[2rem] p-8 rotate-[-0.6deg] reveal">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-white text-violet-600 shadow-sm mb-7">
+                        <i class="fas fa-film text-2xl"></i>
                     </div>
-                    <h3 class="font-semibold text-2xl md:text-3xl tracking-tight mb-4">AI Short Films</h3>
-                    <p class="text-white/70 leading-relaxed">Narrative-driven short films crafted with state-of-the-art generative video models. Cinematic storytelling without limits.</p>
-                    <a href="#portfolio" class="mt-8 pt-6 border-t border-white/10 text-sm font-medium flex items-center gap-x-2 text-purple-400 group-hover:text-purple-300">
-                        <span>View examples</span>
-                        <i class="fas fa-arrow-right text-xs"></i>
+                    <h3 class="font-display font-semibold text-2xl md:text-3xl mb-3">AI Short Films</h3>
+                    <p class="text-stone-600 leading-relaxed">Narrative-driven short films crafted with state-of-the-art generative video models. Cinematic storytelling without limits.</p>
+                    <a href="#portfolio" class="mt-7 inline-flex items-center gap-x-2 text-sm font-bold text-violet-700">
+                        View examples <i class="fas fa-arrow-right text-xs"></i>
                     </a>
                 </div>
 
-                <div class="service-card group bg-zinc-950/80 border border-white/10 rounded-3xl p-8 reveal reveal-delay-1">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-400 mb-8 group-hover:bg-cyan-400/20 transition">
-                        <i class="fas fa-video text-3xl"></i>
+                <div class="soft-card bg-amber-50 rounded-[2rem] p-8 rotate-[0.8deg] lg:mt-10 reveal reveal-delay-1">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-white text-amber-500 shadow-sm mb-7">
+                        <i class="fas fa-video text-2xl"></i>
                     </div>
-                    <h3 class="font-semibold text-2xl md:text-3xl tracking-tight mb-4">UGC Creation</h3>
-                    <p class="text-white/70 leading-relaxed">Authentic, relatable user-generated style videos at scale. Perfect for brands that want real engagement without the production headache.</p>
-                    <a href="#portfolio" class="mt-8 pt-6 border-t border-white/10 text-sm font-medium flex items-center gap-x-2 text-purple-400 group-hover:text-purple-300">
-                        <span>View examples</span>
-                        <i class="fas fa-arrow-right text-xs"></i>
+                    <h3 class="font-display font-semibold text-2xl md:text-3xl mb-3">UGC Creation</h3>
+                    <p class="text-stone-600 leading-relaxed">Authentic, relatable user-generated style videos at scale. Real engagement without the production headache.</p>
+                    <a href="#portfolio" class="mt-7 inline-flex items-center gap-x-2 text-sm font-bold text-amber-600">
+                        View examples <i class="fas fa-arrow-right text-xs"></i>
                     </a>
                 </div>
 
-                <div class="service-card group bg-zinc-950/80 border border-white/10 rounded-3xl p-8 reveal reveal-delay-2">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-purple-500/10 text-purple-400 mb-8 group-hover:bg-purple-500/20 transition">
-                        <i class="fas fa-palette text-3xl"></i>
+                <div class="soft-card bg-rose-50 rounded-[2rem] p-8 rotate-[-0.8deg] reveal reveal-delay-2">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-white text-rose-500 shadow-sm mb-7">
+                        <i class="fas fa-palette text-2xl"></i>
                     </div>
-                    <h3 class="font-semibold text-2xl md:text-3xl tracking-tight mb-4">Concept Art &amp; Visuals</h3>
-                    <p class="text-white/70 leading-relaxed">Surreal, futuristic, and emotionally resonant AI-generated artwork and visual campaigns for brands, exhibitions, and digital experiences.</p>
-                    <a href="#portfolio" class="mt-8 pt-6 border-t border-white/10 text-sm font-medium flex items-center gap-x-2 text-purple-400 group-hover:text-purple-300">
-                        <span>View examples</span>
-                        <i class="fas fa-arrow-right text-xs"></i>
+                    <h3 class="font-display font-semibold text-2xl md:text-3xl mb-3">Concept Art &amp; Visuals</h3>
+                    <p class="text-stone-600 leading-relaxed">Surreal, futuristic, emotionally resonant artwork and visual campaigns for brands, exhibitions and digital experiences.</p>
+                    <a href="#portfolio" class="mt-7 inline-flex items-center gap-x-2 text-sm font-bold text-rose-600">
+                        View examples <i class="fas fa-arrow-right text-xs"></i>
                     </a>
                 </div>
 
-                <div class="service-card group bg-zinc-950/80 border border-white/10 rounded-3xl p-8 reveal reveal-delay-3">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-400 mb-8 group-hover:bg-cyan-400/20 transition">
-                        <i class="fas fa-bullhorn text-3xl"></i>
+                <div class="soft-card bg-sky-50 rounded-[2rem] p-8 rotate-[0.6deg] lg:mt-10 reveal reveal-delay-3">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-white text-sky-500 shadow-sm mb-7">
+                        <i class="fas fa-bullhorn text-2xl"></i>
                     </div>
-                    <h3 class="font-semibold text-2xl md:text-3xl tracking-tight mb-4">Content Production</h3>
-                    <p class="text-white/70 leading-relaxed">End-to-end social content systems — Reels, TikToks, campaigns. From concept to final cut, optimized for virality and brand goals.</p>
-                    <a href="#portfolio" class="mt-8 pt-6 border-t border-white/10 text-sm font-medium flex items-center gap-x-2 text-purple-400 group-hover:text-purple-300">
-                        <span>View examples</span>
-                        <i class="fas fa-arrow-right text-xs"></i>
+                    <h3 class="font-display font-semibold text-2xl md:text-3xl mb-3">Content Production</h3>
+                    <p class="text-stone-600 leading-relaxed">End-to-end social content systems — Reels, TikToks, campaigns. From concept to final cut, optimized for virality.</p>
+                    <a href="#portfolio" class="mt-7 inline-flex items-center gap-x-2 text-sm font-bold text-sky-600">
+                        View examples <i class="fas fa-arrow-right text-xs"></i>
                     </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- PORTFOLIO -->
-    <section id="portfolio" class="section-solid overflow-hidden">
-        <div class="geo geo-b" style="width:200px;height:200px;right:-40px;top:6%;opacity:0.26;">
-            <svg viewBox="0 0 100 100"><polygon points="50,3 93,26 93,74 50,97 7,74 7,26" fill="none" stroke="#a855f7" stroke-width="1.4"/></svg>
-        </div>
-        <div class="geo geo-a" style="width:120px;height:120px;left:2%;top:40%;opacity:0.3;animation-duration:15s;">
-            <svg viewBox="0 0 100 100"><polygon points="50,3 93,26 93,74 50,97 7,74 7,26" fill="none" stroke="#67e8f9" stroke-width="1.7"/></svg>
-        </div>
-        <div class="geo geo-spin" style="width:280px;height:280px;left:-70px;bottom:-60px;opacity:0.2;animation-duration:34s;">
-            <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#a855f7" stroke-width="0.9" stroke-dasharray="5 5"/></svg>
-        </div>
-        <div class="max-w-7xl mx-auto px-6 pt-24 pb-16 relative">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-y-4">
+    <!-- PORTFOLIO (Pinterest-style masonry) -->
+    <section id="portfolio" class="relative z-10 py-24 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-y-5">
                 <div>
-                    <div class="uppercase tracking-[3px] text-purple-400 text-sm font-semibold mb-3 reveal">SELECTED WORK</div>
-                    <h2 class="heading-serif text-5xl md:text-6xl tracking-tighter reveal reveal-delay-1">Portfolio</h2>
+                    <div class="uppercase tracking-[3px] text-violet-600 text-sm font-extrabold mb-4 reveal">SELECTED WORK</div>
+                    <h2 class="font-display text-5xl md:text-6xl reveal reveal-delay-1"><em>Portfolio</em></h2>
                 </div>
 
                 <div class="flex flex-wrap gap-2 reveal reveal-delay-2" id="portfolio-filters">
-                    <button data-filter="all" class="filter-btn active px-6 py-2 text-sm font-medium border border-white/20 rounded-3xl hover:bg-white/5">All Work</button>
-                    <button data-filter="short-film" class="filter-btn px-5 py-2 text-sm font-medium border border-white/20 rounded-3xl hover:bg-white/5">Short Films</button>
-                    <button data-filter="art" class="filter-btn px-5 py-2 text-sm font-medium border border-white/20 rounded-3xl hover:bg-white/5">Concept Art</button>
-                    <button data-filter="campaign" class="filter-btn px-5 py-2 text-sm font-medium border border-white/20 rounded-3xl hover:bg-white/5">Campaigns</button>
+                    <button data-filter="all" class="filter-btn active px-6 py-2.5 text-sm font-bold border border-stone-300 rounded-full bg-white">All Work</button>
+                    <button data-filter="short-film" class="filter-btn px-5 py-2.5 text-sm font-bold border border-stone-300 rounded-full bg-white hover:border-stone-900">Short Films</button>
+                    <button data-filter="art" class="filter-btn px-5 py-2.5 text-sm font-bold border border-stone-300 rounded-full bg-white hover:border-stone-900">Concept Art</button>
+                    <button data-filter="campaign" class="filter-btn px-5 py-2.5 text-sm font-bold border border-stone-300 rounded-full bg-white hover:border-stone-900">Campaigns</button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="portfolio-grid">
+            <div class="columns-1 sm:columns-2 lg:columns-3 gap-6" id="portfolio-grid">
 
-                <!-- Project 1: The Awakening -->
-                <div class="portfolio-card group bg-zinc-900/80 rounded-3xl overflow-hidden border border-white/10 reveal" data-category="short-film">
-                    <div class="relative">
-                        <img src="assets/awakening.jpg" alt="The Awakening — AI short film poster" class="portfolio-img w-full">
-                        <div class="absolute top-4 left-4">
-                            <span class="px-3 py-1 text-xs font-medium bg-black/70 backdrop-blur rounded-full">SHORT FILM</span>
-                        </div>
+                <div class="pin-card mb-6 reveal" data-category="short-film">
+                    <div class="overflow-hidden">
+                        <img src="assets/beyond-lagos.jpg" alt="Beyond Lagos — AI short film poster">
                     </div>
                     <div class="p-6">
-                        <h4 class="font-semibold text-2xl tracking-tight mb-1">The Awakening</h4>
-                        <p class="text-white/60 text-sm mb-4">A film by Olukayode • Alternatefact Studios</p>
-                        <p class="text-white/70 line-clamp-2">Some powers were never meant to sleep. The past never dies — it waits. A cinematic AI creature feature.</p>
-                        <button onclick="showProjectModal(0)"
-                                class="mt-5 inline-flex items-center gap-x-2 text-sm font-semibold text-purple-400 hover:text-purple-300 group-hover:gap-x-3 transition-all">
-                            View Project <i class="fas fa-arrow-right text-xs"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Project 2: Beyond Lagos -->
-                <div class="portfolio-card group bg-zinc-900/80 rounded-3xl overflow-hidden border border-white/10 reveal reveal-delay-1" data-category="short-film">
-                    <div class="relative">
-                        <img src="assets/beyond-lagos.jpg" alt="Beyond Lagos — AI short film poster" class="portfolio-img w-full">
-                        <div class="absolute top-4 left-4">
-                            <span class="px-3 py-1 text-xs font-medium bg-black/70 backdrop-blur rounded-full">SHORT FILM</span>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <h4 class="font-semibold text-2xl tracking-tight mb-1">Beyond Lagos</h4>
-                        <p class="text-white/60 text-sm mb-4">A film by Olukayode • African Futures</p>
-                        <p class="text-white/70 line-clamp-2">Some dreams don't end at the horizon. An Afro-futurist space epic taking African stories beyond the stars.</p>
+                        <span class="inline-block px-3 py-1 text-[11px] font-extrabold tracking-wider bg-violet-100 text-violet-700 rounded-full mb-3">SHORT FILM</span>
+                        <h4 class="font-display font-semibold text-2xl mb-1">Beyond Lagos</h4>
+                        <p class="text-stone-500 text-sm mb-3 font-semibold">A film by Olukayode • African Futures</p>
+                        <p class="text-stone-600">Some dreams don't end at the horizon. An Afro-futurist space epic taking African stories beyond the stars.</p>
                         <button onclick="showProjectModal(1)"
-                                class="mt-5 inline-flex items-center gap-x-2 text-sm font-semibold text-purple-400 hover:text-purple-300 group-hover:gap-x-3 transition-all">
+                                class="mt-4 inline-flex items-center gap-x-2 text-sm font-bold text-violet-700 hover:text-violet-500">
                             View Project <i class="fas fa-arrow-right text-xs"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- Project 3: Adorned -->
-                <div class="portfolio-card group bg-zinc-900/80 rounded-3xl overflow-hidden border border-white/10 reveal" data-category="art">
-                    <div class="relative">
-                        <img src="assets/concept-art.jpg" alt="Adorned — AI concept art character" class="portfolio-img w-full" style="object-position: center;">
-                        <div class="absolute top-4 left-4">
-                            <span class="px-3 py-1 text-xs font-medium bg-black/70 backdrop-blur rounded-full">CONCEPT ART</span>
-                        </div>
+                <div class="pin-card mb-6 reveal reveal-delay-1" data-category="short-film">
+                    <div class="overflow-hidden">
+                        <img src="assets/awakening.jpg" alt="The Awakening — AI short film poster">
                     </div>
                     <div class="p-6">
-                        <h4 class="font-semibold text-2xl tracking-tight mb-1">Adorned</h4>
-                        <p class="text-white/60 text-sm mb-4">Concept Series • 2025</p>
-                        <p class="text-white/70 line-clamp-2">Character and world design with couture-level detail — impossible materials rendered with real emotion.</p>
-                        <button onclick="showProjectModal(2)"
-                                class="mt-5 inline-flex items-center gap-x-2 text-sm font-semibold text-purple-400 hover:text-purple-300 group-hover:gap-x-3 transition-all">
+                        <span class="inline-block px-3 py-1 text-[11px] font-extrabold tracking-wider bg-amber-100 text-amber-700 rounded-full mb-3">SHORT FILM</span>
+                        <h4 class="font-display font-semibold text-2xl mb-1">The Awakening</h4>
+                        <p class="text-stone-500 text-sm mb-3 font-semibold">A film by Olukayode • Alternatefact Studios</p>
+                        <p class="text-stone-600">Some powers were never meant to sleep. The past never dies — it waits. A cinematic AI creature feature.</p>
+                        <button onclick="showProjectModal(0)"
+                                class="mt-4 inline-flex items-center gap-x-2 text-sm font-bold text-violet-700 hover:text-violet-500">
                             View Project <i class="fas fa-arrow-right text-xs"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- Project 4: One Choice -->
-                <div class="portfolio-card group bg-zinc-900/80 rounded-3xl overflow-hidden border border-white/10 reveal reveal-delay-1" data-category="campaign">
-                    <div class="relative">
-                        <img src="assets/one-choice.jpg" alt="One Choice — public awareness campaign poster" class="portfolio-img w-full">
-                        <div class="absolute top-4 left-4">
-                            <span class="px-3 py-1 text-xs font-medium bg-black/70 backdrop-blur rounded-full">CAMPAIGN</span>
-                        </div>
+                <div class="pin-card mb-6 reveal reveal-delay-2" data-category="campaign">
+                    <div class="overflow-hidden">
+                        <img src="assets/one-choice.jpg" alt="One Choice — public awareness campaign poster">
                     </div>
                     <div class="p-6">
-                        <h4 class="font-semibold text-2xl tracking-tight mb-1">One Choice</h4>
-                        <p class="text-white/60 text-sm mb-4">Public Awareness Campaign</p>
-                        <p class="text-white/70 line-clamp-2">One choice can change everything. Purpose-driven campaign art that stops the scroll and carries a message.</p>
+                        <span class="inline-block px-3 py-1 text-[11px] font-extrabold tracking-wider bg-rose-100 text-rose-700 rounded-full mb-3">CAMPAIGN</span>
+                        <h4 class="font-display font-semibold text-2xl mb-1">One Choice</h4>
+                        <p class="text-stone-500 text-sm mb-3 font-semibold">Public Awareness Campaign</p>
+                        <p class="text-stone-600">One choice can change everything. Purpose-driven campaign art that stops the scroll and carries a message.</p>
                         <button onclick="showProjectModal(3)"
-                                class="mt-5 inline-flex items-center gap-x-2 text-sm font-semibold text-purple-400 hover:text-purple-300 group-hover:gap-x-3 transition-all">
+                                class="mt-4 inline-flex items-center gap-x-2 text-sm font-bold text-violet-700 hover:text-violet-500">
+                            View Project <i class="fas fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pin-card mb-6 reveal" data-category="art">
+                    <div class="overflow-hidden">
+                        <img src="assets/concept-art.jpg" alt="Adorned — AI concept art character">
+                    </div>
+                    <div class="p-6">
+                        <span class="inline-block px-3 py-1 text-[11px] font-extrabold tracking-wider bg-sky-100 text-sky-700 rounded-full mb-3">CONCEPT ART</span>
+                        <h4 class="font-display font-semibold text-2xl mb-1">Adorned</h4>
+                        <p class="text-stone-500 text-sm mb-3 font-semibold">Concept Series • 2025</p>
+                        <p class="text-stone-600">Character and world design with couture-level detail — impossible materials rendered with real emotion.</p>
+                        <button onclick="showProjectModal(2)"
+                                class="mt-4 inline-flex items-center gap-x-2 text-sm font-bold text-violet-700 hover:text-violet-500">
                             View Project <i class="fas fa-arrow-right text-xs"></i>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div class="text-center mt-12 reveal">
+            <div class="text-center mt-10 reveal">
                 <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener"
-                   class="inline-flex items-center gap-x-3 text-purple-400 hover:text-purple-300 font-medium">
+                   class="inline-flex items-center gap-x-3 text-violet-700 hover:text-violet-500 font-bold">
                     See more work on Instagram <i class="fab fa-instagram ml-1"></i>
                 </a>
             </div>
@@ -680,109 +533,86 @@
     </section>
 
     <!-- PROCESS -->
-    <section id="process" class="section-solid-2 py-20 overflow-hidden">
-        <div class="orb w-80 h-80 bg-violet-700 left-1/3 top-10" style="animation-delay: -4s;"></div>
-        <div class="geo geo-a" style="width:190px;height:190px;left:4%;bottom:10%;opacity:0.28;animation-duration:16s;">
-            <svg viewBox="0 0 100 100"><polygon points="50,3 93,26 93,74 50,97 7,74 7,26" fill="none" stroke="#a855f7" stroke-width="1.5"/></svg>
-        </div>
-        <div class="geo geo-b" style="width:130px;height:130px;right:6%;top:12%;opacity:0.32;">
-            <svg viewBox="0 0 100 100"><polygon points="50,6 94,84 6,84" fill="none" stroke="#67e8f9" stroke-width="1.7"/></svg>
-        </div>
-        <div class="geo geo-c" style="width:110px;height:110px;right:22%;bottom:8%;opacity:0.3;animation-duration:15s;">
-            <svg viewBox="0 0 100 100"><rect x="14" y="14" width="72" height="72" rx="10" fill="none" stroke="#c084fc" stroke-width="1.6" transform="rotate(14 50 50)"/></svg>
-        </div>
-        <div class="max-w-5xl mx-auto px-6 relative">
-            <div class="text-center mb-14">
-                <div class="uppercase tracking-[3px] text-purple-400 text-sm font-semibold mb-3 reveal">HOW WE WORK</div>
-                <h2 class="heading-serif text-5xl md:text-6xl tracking-tighter reveal reveal-delay-1">From idea to impact.<br>Seamlessly.</h2>
+    <section id="process" class="relative z-10 py-24 overflow-hidden">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <div class="uppercase tracking-[3px] text-violet-600 text-sm font-extrabold mb-4 reveal">HOW WE WORK</div>
+                <h2 class="font-display text-5xl md:text-6xl leading-tight reveal reveal-delay-1">From idea to impact.<br><em>Seamlessly.</em></h2>
             </div>
 
-            <div class="grid md:grid-cols-4 gap-6">
-                <div class="text-center reveal">
-                    <div class="mx-auto w-16 h-16 flex items-center justify-center rounded-2xl bg-purple-500/10 text-purple-400 mb-6">
-                        <span class="font-mono text-3xl font-bold">01</span>
-                    </div>
-                    <h4 class="font-semibold text-xl mb-3">Discovery Call</h4>
-                    <p class="text-white/70">We dive deep into your vision, brand, audience, and goals. No fluff — just clarity.</p>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
+                <div class="soft-card bg-white border border-stone-200 rounded-[2rem] p-8 rotate-[-0.5deg] reveal">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-full bg-violet-100 text-violet-700 mb-6 font-display text-2xl font-semibold">1</div>
+                    <h4 class="font-display font-semibold text-2xl mb-3">Discovery Call</h4>
+                    <p class="text-stone-600">We dive deep into your vision, brand, audience, and goals. No fluff — just clarity.</p>
                 </div>
-                <div class="text-center reveal reveal-delay-1">
-                    <div class="mx-auto w-16 h-16 flex items-center justify-center rounded-2xl bg-purple-500/10 text-purple-400 mb-6">
-                        <span class="font-mono text-3xl font-bold">02</span>
-                    </div>
-                    <h4 class="font-semibold text-xl mb-3">Creative Direction</h4>
-                    <p class="text-white/70">Our team develops concepts, mood boards, scripts, and AI production pipelines tailored to you.</p>
+                <div class="soft-card bg-white border border-stone-200 rounded-[2rem] p-8 rotate-[0.6deg] lg:mt-8 reveal reveal-delay-1">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-full bg-amber-100 text-amber-600 mb-6 font-display text-2xl font-semibold">2</div>
+                    <h4 class="font-display font-semibold text-2xl mb-3">Creative Direction</h4>
+                    <p class="text-stone-600">Concepts, mood boards, scripts, and AI production pipelines tailored to you.</p>
                 </div>
-                <div class="text-center reveal reveal-delay-2">
-                    <div class="mx-auto w-16 h-16 flex items-center justify-center rounded-2xl bg-purple-500/10 text-purple-400 mb-6">
-                        <span class="font-mono text-3xl font-bold">03</span>
-                    </div>
-                    <h4 class="font-semibold text-xl mb-3">AI Production</h4>
-                    <p class="text-white/70">Rapid iteration using our proprietary AI toolkit. We generate, refine, and perfect every frame.</p>
+                <div class="soft-card bg-white border border-stone-200 rounded-[2rem] p-8 rotate-[-0.6deg] reveal reveal-delay-2">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-full bg-rose-100 text-rose-600 mb-6 font-display text-2xl font-semibold">3</div>
+                    <h4 class="font-display font-semibold text-2xl mb-3">AI Production</h4>
+                    <p class="text-stone-600">Rapid iteration with our proprietary AI toolkit. We generate, refine, and perfect every frame.</p>
                 </div>
-                <div class="text-center reveal reveal-delay-3">
-                    <div class="mx-auto w-16 h-16 flex items-center justify-center rounded-2xl bg-purple-500/10 text-purple-400 mb-6">
-                        <span class="font-mono text-3xl font-bold">04</span>
-                    </div>
-                    <h4 class="font-semibold text-xl mb-3">Delivery &amp; Optimization</h4>
-                    <p class="text-white/70">Final delivery in all formats + performance insights. We stay partners for ongoing success.</p>
+                <div class="soft-card bg-white border border-stone-200 rounded-[2rem] p-8 rotate-[0.5deg] lg:mt-8 reveal reveal-delay-3">
+                    <div class="w-14 h-14 flex items-center justify-center rounded-full bg-sky-100 text-sky-600 mb-6 font-display text-2xl font-semibold">4</div>
+                    <h4 class="font-display font-semibold text-2xl mb-3">Delivery &amp; Optimization</h4>
+                    <p class="text-stone-600">Final delivery in all formats + performance insights. We stay partners for ongoing success.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- TESTIMONIALS -->
-    <section class="section-solid py-20 overflow-hidden">
-        <div class="geo geo-c" style="width:170px;height:170px;right:5%;top:12%;opacity:0.28;animation-duration:17s;">
-            <svg viewBox="0 0 100 100"><polygon points="50,6 94,84 6,84" fill="none" stroke="#e879f9" stroke-width="1.6"/></svg>
-        </div>
-        <div class="geo geo-b" style="width:220px;height:220px;left:-50px;top:30%;opacity:0.22;">
-            <svg viewBox="0 0 100 100"><polygon points="50,3 93,26 93,74 50,97 7,74 7,26" fill="none" stroke="#67e8f9" stroke-width="1.2"/></svg>
-        </div>
-        <div class="max-w-5xl mx-auto px-6">
-            <div class="text-center mb-12">
-                <div class="uppercase tracking-[3px] text-purple-400 text-sm font-semibold mb-3 reveal">LOVED BY CREATORS &amp; BRANDS</div>
-                <h2 class="heading-serif text-4xl md:text-5xl tracking-tighter reveal reveal-delay-1">What our partners say</h2>
+    <section class="relative z-10 py-24 overflow-hidden">
+        <div class="blob w-96 h-96 bg-violet-100 right-0 top-10"></div>
+        <div class="max-w-6xl mx-auto px-6 relative">
+            <div class="text-center mb-14">
+                <div class="uppercase tracking-[3px] text-violet-600 text-sm font-extrabold mb-4 reveal">LOVED BY CREATORS &amp; BRANDS</div>
+                <h2 class="font-display text-4xl md:text-5xl reveal reveal-delay-1">What our <em>partners</em> say</h2>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="glass p-8 rounded-3xl reveal">
-                    <div class="flex gap-x-1 text-yellow-400 mb-4">
+            <div class="grid md:grid-cols-3 gap-6 items-start">
+                <div class="soft-card bg-white border border-stone-200 rounded-[2rem] p-8 rotate-[-0.6deg] reveal">
+                    <div class="flex gap-x-1 text-amber-400 mb-4">
                         <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
                     </div>
-                    <p class="italic text-white/80">"Alternatefact turned our vague brief into the most beautiful 90-second film we've ever released. The response has been insane."</p>
+                    <p class="font-display italic text-lg text-stone-700">"Alternatefact turned our vague brief into the most beautiful 90-second film we've ever released. The response has been insane."</p>
                     <div class="mt-6 flex items-center gap-x-3">
-                        <div class="w-9 h-9 bg-gradient-to-br from-purple-500/40 to-cyan-400/40 rounded-full"></div>
+                        <div class="w-10 h-10 bg-gradient-to-br from-violet-300 to-amber-200 rounded-full"></div>
                         <div>
-                            <div class="font-medium">Elena Voss</div>
-                            <div class="text-sm text-white/50">Creative Director, Vesper</div>
+                            <div class="font-bold">Elena Voss</div>
+                            <div class="text-sm text-stone-500">Creative Director, Vesper</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="glass p-8 rounded-3xl reveal reveal-delay-1">
-                    <div class="flex gap-x-1 text-yellow-400 mb-4">
+                <div class="soft-card bg-white border border-stone-200 rounded-[2rem] p-8 rotate-[0.5deg] md:mt-8 reveal reveal-delay-1">
+                    <div class="flex gap-x-1 text-amber-400 mb-4">
                         <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                     </div>
-                    <p class="italic text-white/80">"The UGC they delivered looked and felt 100% authentic. Our engagement tripled. Working with them is like having a full creative + tech team in one."</p>
+                    <p class="font-display italic text-lg text-stone-700">"The UGC they delivered looked and felt 100% authentic. Our engagement tripled. Like having a full creative + tech team in one."</p>
                     <div class="mt-6 flex items-center gap-x-3">
-                        <div class="w-9 h-9 bg-gradient-to-br from-purple-500/40 to-cyan-400/40 rounded-full"></div>
+                        <div class="w-10 h-10 bg-gradient-to-br from-amber-200 to-rose-200 rounded-full"></div>
                         <div>
-                            <div class="font-medium">Marcus Hale</div>
-                            <div class="text-sm text-white/50">Founder, Lumina</div>
+                            <div class="font-bold">Marcus Hale</div>
+                            <div class="text-sm text-stone-500">Founder, Lumina</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="glass p-8 rounded-3xl reveal reveal-delay-2">
-                    <div class="flex gap-x-1 text-yellow-400 mb-4">
+                <div class="soft-card bg-white border border-stone-200 rounded-[2rem] p-8 rotate-[-0.4deg] reveal reveal-delay-2">
+                    <div class="flex gap-x-1 text-amber-400 mb-4">
                         <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                     </div>
-                    <p class="italic text-white/80">"They took our brand story and turned it into something visually stunning and emotionally powerful. The best creative partnership we've had."</p>
+                    <p class="font-display italic text-lg text-stone-700">"They took our brand story and turned it into something visually stunning and emotionally powerful. The best creative partnership we've had."</p>
                     <div class="mt-6 flex items-center gap-x-3">
-                        <div class="w-9 h-9 bg-gradient-to-br from-purple-500/40 to-cyan-400/40 rounded-full"></div>
+                        <div class="w-10 h-10 bg-gradient-to-br from-sky-200 to-violet-300 rounded-full"></div>
                         <div>
-                            <div class="font-medium">Sofia Patel</div>
-                            <div class="text-sm text-white/50">Head of Brand, Techwear Co.</div>
+                            <div class="font-bold">Sofia Patel</div>
+                            <div class="text-sm text-stone-500">Head of Brand, Techwear Co.</div>
                         </div>
                     </div>
                 </div>
@@ -791,63 +621,58 @@
     </section>
 
     <!-- CONTACT -->
-    <section id="contact" class="section-solid-2 py-20 border-t border-white/10 overflow-hidden">
-        <div class="orb w-96 h-96 bg-purple-600 -right-40 top-1/4" style="animation-delay: -9s;"></div>
-        <div class="geo geo-c" style="width:260px;height:260px;left:3%;top:10%;opacity:0.24;">
-            <svg viewBox="0 0 100 100"><polygon points="50,3 93,26 93,74 50,97 7,74 7,26" fill="none" stroke="#67e8f9" stroke-width="1.2"/></svg>
-        </div>
-        <div class="geo geo-a" style="width:140px;height:140px;left:12%;bottom:8%;opacity:0.3;animation-duration:14s;">
-            <svg viewBox="0 0 100 100"><polygon points="50,3 93,26 93,74 50,97 7,74 7,26" fill="none" stroke="#a855f7" stroke-width="1.7"/></svg>
-        </div>
-        <div class="geo geo-spin" style="width:240px;height:240px;right:-50px;bottom:-40px;opacity:0.22;animation-duration:32s;">
-            <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#67e8f9" stroke-width="0.9" stroke-dasharray="3 6"/></svg>
-        </div>
-        <div class="max-w-3xl mx-auto px-6 text-center relative">
-            <div class="uppercase tracking-[3px] text-purple-400 text-sm font-semibold mb-3 reveal">LET'S CREATE SOMETHING REMARKABLE</div>
-            <h2 class="heading-serif text-5xl md:text-6xl tracking-tighter mb-4 reveal reveal-delay-1">Ready to build your<br>next alternate reality?</h2>
-            <p class="text-xl text-white/70 max-w-md mx-auto reveal reveal-delay-2">Tell us about your project. We'll get back within 24 hours with ideas and next steps.</p>
+    <section id="contact" class="relative z-10 py-24 overflow-hidden">
+        <div class="max-w-3xl mx-auto px-6">
+            <div class="bg-white border border-stone-200 rounded-[2.5rem] shadow-xl shadow-stone-200/60 p-10 md:p-14 text-center relative overflow-hidden">
+                <div class="blob w-72 h-72 bg-violet-100 -right-20 -top-20"></div>
+                <div class="relative">
+                    <div class="uppercase tracking-[3px] text-violet-600 text-sm font-extrabold mb-4">LET'S CREATE SOMETHING REMARKABLE</div>
+                    <h2 class="font-display text-4xl md:text-5xl leading-tight mb-4">Ready to build your<br><em>next alternate reality?</em></h2>
+                    <p class="text-lg text-stone-600 max-w-md mx-auto">Tell us about your project. We'll get back within 24 hours with ideas and next steps.</p>
 
-            <form id="contact-form" class="mt-10 max-w-xl mx-auto reveal reveal-delay-2">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <input type="text" placeholder="Your name" required
-                           class="bg-zinc-950/80 border border-white/20 focus:border-purple-500 px-6 py-4 rounded-3xl text-white placeholder:text-white/50 outline-none">
-                    <input type="email" placeholder="Work email" required
-                           class="bg-zinc-950/80 border border-white/20 focus:border-purple-500 px-6 py-4 rounded-3xl text-white placeholder:text-white/50 outline-none">
+                    <form id="contact-form" class="mt-10 text-left">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <input type="text" placeholder="Your name" required
+                                   class="bg-stone-50 border border-stone-200 focus:border-violet-500 px-6 py-4 rounded-full outline-none font-semibold placeholder:text-stone-400 placeholder:font-medium">
+                            <input type="email" placeholder="Work email" required
+                                   class="bg-stone-50 border border-stone-200 focus:border-violet-500 px-6 py-4 rounded-full outline-none font-semibold placeholder:text-stone-400 placeholder:font-medium">
+                        </div>
+
+                        <div class="mt-4">
+                            <select required class="bg-stone-50 border border-stone-200 focus:border-violet-500 px-6 py-4 rounded-full w-full outline-none font-semibold text-stone-600">
+                                <option value="">What are you looking for?</option>
+                                <option value="short-film">AI Short Film</option>
+                                <option value="ugc">UGC Campaign</option>
+                                <option value="art">Concept Art / Visuals</option>
+                                <option value="content">Ongoing Content Production</option>
+                                <option value="other">Something else</option>
+                            </select>
+                        </div>
+
+                        <textarea placeholder="Tell us about your project, timeline, or vision..." rows="5" required
+                                  class="mt-4 w-full bg-stone-50 border border-stone-200 focus:border-violet-500 px-6 py-4 rounded-[1.5rem] outline-none resize-y font-semibold placeholder:text-stone-400 placeholder:font-medium"></textarea>
+
+                        <button type="submit"
+                                class="mt-6 w-full py-4 bg-stone-900 hover:bg-violet-700 transition font-bold text-white rounded-full text-lg active:scale-[0.99]">
+                            Send Message
+                        </button>
+
+                        <p class="text-xs text-stone-400 mt-4 text-center">Or email us directly at <a href="mailto:hello@alternatefact.studios" class="underline hover:text-stone-700">hello@alternatefact.studios</a></p>
+                    </form>
                 </div>
-
-                <div class="mt-4">
-                    <select required class="bg-zinc-950/80 border border-white/20 focus:border-purple-500 px-6 py-4 rounded-3xl text-white w-full outline-none">
-                        <option value="">What are you looking for?</option>
-                        <option value="short-film">AI Short Film</option>
-                        <option value="ugc">UGC Campaign</option>
-                        <option value="art">Concept Art / Visuals</option>
-                        <option value="content">Ongoing Content Production</option>
-                        <option value="other">Something else</option>
-                    </select>
-                </div>
-
-                <textarea placeholder="Tell us about your project, timeline, or vision..." rows="5" required
-                          class="mt-4 w-full bg-zinc-950/80 border border-white/20 focus:border-purple-500 px-6 py-4 rounded-3xl text-white placeholder:text-white/50 outline-none resize-y"></textarea>
-
-                <button type="submit"
-                        class="mt-6 w-full py-4 bg-white hover:bg-purple-100 active:bg-purple-200 transition font-semibold text-zinc-950 rounded-3xl text-lg">
-                    Send Message
-                </button>
-
-                <p class="text-xs text-white/40 mt-4">Or email us directly at <a href="mailto:hello@alternatefact.studios" class="underline hover:text-white">hello@alternatefact.studios</a></p>
-            </form>
+            </div>
         </div>
     </section>
 
     <!-- FOOTER -->
-    <footer class="section-solid border-t border-white/10 py-12">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-y-6 text-sm text-white/60">
+    <footer class="relative z-10 border-t border-stone-200 py-12 bg-white/60">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-y-6 text-sm text-stone-500 font-semibold">
             <div>© 2026 Alternatefact Studios. All alternate realities reserved.</div>
 
             <div class="flex items-center gap-x-6">
-                <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener" class="hover:text-white transition">Instagram</a>
-                <a href="#" class="hover:text-white transition">X / Twitter</a>
-                <a href="#" class="hover:text-white transition">LinkedIn</a>
+                <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener" class="hover:text-stone-900 transition">Instagram</a>
+                <a href="#" class="hover:text-stone-900 transition">X / Twitter</a>
+                <a href="#" class="hover:text-stone-900 transition">LinkedIn</a>
             </div>
 
             <div>Frankfurt • Global</div>
@@ -856,45 +681,45 @@
 
     <!-- PROJECT MODAL -->
     <div id="project-modal" onclick="if (event.target.id === 'project-modal') hideProjectModal()"
-         class="hidden fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-6">
+         class="hidden fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-6">
         <div onclick="event.stopImmediatePropagation()"
-             class="modal bg-zinc-900 max-w-4xl w-full rounded-3xl overflow-hidden border border-white/10 max-h-[90vh] overflow-y-auto">
+             class="modal bg-white max-w-4xl w-full rounded-[2rem] overflow-hidden border border-stone-200 max-h-[90vh] overflow-y-auto">
 
-            <div class="flex justify-between items-center px-8 py-5 border-b border-white/10 sticky top-0 bg-zinc-900 z-10">
-                <div id="modal-category" class="px-3 py-1 text-xs font-medium bg-white/10 rounded-full"></div>
-                <button onclick="hideProjectModal()" class="text-3xl leading-none text-white/60 hover:text-white">&times;</button>
+            <div class="flex justify-between items-center px-8 py-5 border-b border-stone-200 sticky top-0 bg-white z-10">
+                <div id="modal-category"></div>
+                <button onclick="hideProjectModal()" class="text-3xl leading-none text-stone-400 hover:text-stone-900">&times;</button>
             </div>
 
             <div class="p-8 md:p-10">
-                <div id="modal-image-container" class="mb-8 rounded-2xl overflow-hidden"></div>
+                <div id="modal-image-container" class="mb-8 rounded-[1.5rem] overflow-hidden bg-stone-100"></div>
 
                 <div class="flex flex-col md:flex-row md:items-start gap-x-8">
                     <div class="flex-1">
-                        <h3 id="modal-title" class="text-4xl font-bold tracking-tight mb-2"></h3>
-                        <p id="modal-subtitle" class="text-white/60 mb-6"></p>
-                        <div id="modal-description" class="prose prose-invert text-white/80 max-w-none"></div>
+                        <h3 id="modal-title" class="font-display font-semibold text-4xl mb-2"></h3>
+                        <p id="modal-subtitle" class="text-stone-500 font-semibold mb-6"></p>
+                        <div id="modal-description" class="text-stone-700 leading-relaxed"></div>
                     </div>
 
                     <div class="md:w-72 mt-8 md:mt-0 flex-shrink-0">
-                        <div class="bg-zinc-950 border border-white/10 rounded-2xl p-6">
-                            <div class="uppercase text-xs tracking-widest text-white/50 mb-3">PROJECT DETAILS</div>
+                        <div class="bg-stone-50 border border-stone-200 rounded-[1.5rem] p-6">
+                            <div class="uppercase text-xs font-extrabold tracking-widest text-stone-400 mb-3">PROJECT DETAILS</div>
                             <div class="space-y-4 text-sm">
                                 <div>
-                                    <div class="text-white/50">Client / Type</div>
-                                    <div id="modal-client" class="font-medium"></div>
+                                    <div class="text-stone-400 font-semibold">Client / Type</div>
+                                    <div id="modal-client" class="font-bold"></div>
                                 </div>
                                 <div>
-                                    <div class="text-white/50">Year</div>
-                                    <div id="modal-year" class="font-medium"></div>
+                                    <div class="text-stone-400 font-semibold">Year</div>
+                                    <div id="modal-year" class="font-bold"></div>
                                 </div>
                                 <div>
-                                    <div class="text-white/50">Role</div>
-                                    <div id="modal-role" class="font-medium"></div>
+                                    <div class="text-stone-400 font-semibold">Role</div>
+                                    <div id="modal-role" class="font-bold"></div>
                                 </div>
                             </div>
-                            <div class="mt-6 pt-6 border-t border-white/10">
+                            <div class="mt-6 pt-6 border-t border-stone-200">
                                 <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener"
-                                   class="flex items-center justify-center gap-x-2 w-full py-3 border border-white/20 hover:bg-white/5 rounded-2xl text-sm font-medium transition">
+                                   class="flex items-center justify-center gap-x-2 w-full py-3 border border-stone-300 hover:border-violet-500 hover:text-violet-700 rounded-full text-sm font-bold transition">
                                     <i class="fab fa-instagram"></i>
                                     <span>View on Instagram</span>
                                 </a>
@@ -908,268 +733,82 @@
 
     <script>
     /* ==========================================================================
-       PARTICLE ENGINE
-       Each artwork is sampled into thousands of colored particles. Scroll
-       position drives a "scene" timeline: scrolling down disintegrates the
-       current image into drifting particles and assembles the next one;
-       scrolling up plays it in reverse, re-forming the previous image.
+       MACHINE ENGINE BACKGROUND
+       Line-art gears and flywheel rings, drawn as SVG, that idle slowly and
+       spin with scroll — interlocking pairs turn in opposite directions,
+       like a futuristic engine ticking over behind the page.
        ========================================================================== */
     (function () {
-        const canvas = document.getElementById('fx-canvas');
-        const ctx = canvas.getContext('2d');
-        const journey = document.getElementById('journey');
-        const chapters = Array.from(document.querySelectorAll('.chapter'));
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const slots = document.querySelectorAll('#machine-layer .gear-slot');
+        const rotors = [];
 
-        const sceneSources = JSON.parse(journey.dataset.scenes).map(s => s.src);
-        // Scene 0 is the hero: ambient dust with no image. Scenes 1..N are the artworks.
-        const NUM_SCENES = sceneSources.length + 1;
-        const HOLD = 0.42;              // fraction of each unit the image stays formed
-
-        // Ambient dust palette for the hero scene (purple / cyan / white)
-        const AMBIENT = [[168, 85, 247], [103, 232, 249], [255, 255, 255], [139, 92, 246], [34, 211, 238]];
-
-        let W = 0, H = 0, DPR = 1;
-        let particles = null;           // Float32Array [x, y, ox, oy, rad, phase, ax, ay] * N
-        let scenes = [null];            // scenes[0] = ambient; per image: { pts, colors, count, iw, ih }
-        let N = 0;                      // particle count
-        let sceneRects = [];            // computed layout rect per scene
-        let scrollTarget = 0, scrollSmooth = 0;
-        let time = 0;
-        let ready = false;
-
-        function isMobile() { return Math.min(window.innerWidth, window.innerHeight) < 640 || window.innerWidth < 768; }
-
-        function resize() {
-            DPR = Math.min(window.devicePixelRatio || 1, 2);
-            W = window.innerWidth;
-            H = window.innerHeight;
-            canvas.width = Math.floor(W * DPR);
-            canvas.height = Math.floor(H * DPR);
-            ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-            computeSceneRects();
-        }
-
-        function computeSceneRects() {
-            sceneRects = scenes.map(s => {
-                if (!s) return null;
-                const pad = isMobile() ? 0.92 : 0.8;
-                const availW = W * pad;
-                const availH = H * (isMobile() ? 0.62 : 0.82);
-                const scale = Math.min(availW / s.iw, availH / s.ih);
-                const w = s.iw * scale, h = s.ih * scale;
-                return { x: (W - w) / 2, y: (H - h) / 2 - (isMobile() ? H * 0.08 : 0), w, h };
-            });
-        }
-
-        // Sample an image into particle targets (u,v in [0,1] + color)
-        function sampleImage(img) {
-            const SAMPLE_W = 220;
-            const sc = SAMPLE_W / img.naturalWidth;
-            const sw = SAMPLE_W, sh = Math.max(1, Math.round(img.naturalHeight * sc));
-            const off = document.createElement('canvas');
-            off.width = sw; off.height = sh;
-            const octx = off.getContext('2d', { willReadFrequently: true });
-            octx.drawImage(img, 0, 0, sw, sh);
-            const data = octx.getImageData(0, 0, sw, sh).data;
-
-            let pts = [], colors = [];
-            for (let y = 0; y < sh; y++) {
-                for (let x = 0; x < sw; x++) {
-                    const i = (y * sw + x) * 4;
-                    const r = data[i], g = data[i + 1], b = data[i + 2];
-                    const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-                    // Skip near-black pixels so the bright subject forms out of the void
-                    if (lum < 16) continue;
-                    // Thin out dim pixels, keep bright ones dense
-                    if (lum < 70 && ((x + y) % 2 === 0)) continue;
-                    pts.push(x / sw + (Math.random() - 0.5) * 0.002, y / sh + (Math.random() - 0.5) * 0.003);
-                    colors.push(r, g, b);
-                }
+        function gearSVG(cfg) {
+            const r = cfg.r, teeth = cfg.teeth, c = cfg.color, w = cfg.width;
+            const size = (r + 22) * 2;
+            const mid = size / 2;
+            let parts = '';
+            // teeth
+            for (let i = 0; i < teeth; i++) {
+                const a = (360 / teeth) * i;
+                parts += '<rect x="' + (mid - 7) + '" y="' + (mid - r - 14) + '" width="14" height="18" rx="4" fill="none" stroke="' + c + '" stroke-width="' + w + '" transform="rotate(' + a + ' ' + mid + ' ' + mid + ')"/>';
             }
-            // Thin out the dominant flat color (usually the background) so the subject stays dense
-            {
-                const bins = new Map();
-                const key = i => ((colors[i] >> 4) << 8) | ((colors[i + 1] >> 4) << 4) | (colors[i + 2] >> 4);
-                for (let i = 0; i < colors.length; i += 3) bins.set(key(i), (bins.get(key(i)) || 0) + 1);
-                let domKey = -1, domCount = 0;
-                bins.forEach((v, k) => { if (v > domCount) { domCount = v; domKey = k; } });
-                if (domCount > (colors.length / 3) * 0.18) {
-                    const npts = [], ncolors = [];
-                    for (let i = 0, p = 0; i < colors.length; i += 3, p += 2) {
-                        if (key(i) === domKey && Math.random() > 0.3) continue;
-                        npts.push(pts[p], pts[p + 1]);
-                        ncolors.push(colors[i], colors[i + 1], colors[i + 2]);
-                    }
-                    pts = npts; colors = ncolors;
-                }
+            // rim + hub
+            parts += '<circle cx="' + mid + '" cy="' + mid + '" r="' + r + '" fill="none" stroke="' + c + '" stroke-width="' + w + '"/>';
+            parts += '<circle cx="' + mid + '" cy="' + mid + '" r="' + (r * 0.62) + '" fill="none" stroke="' + c + '" stroke-width="' + w + '"/>';
+            parts += '<circle cx="' + mid + '" cy="' + mid + '" r="' + (r * 0.16) + '" fill="none" stroke="' + c + '" stroke-width="' + w + '"/>';
+            // spokes
+            for (let i = 0; i < 5; i++) {
+                const a = (Math.PI * 2 / 5) * i;
+                const x1 = mid + Math.cos(a) * r * 0.16, y1 = mid + Math.sin(a) * r * 0.16;
+                const x2 = mid + Math.cos(a) * r * 0.62, y2 = mid + Math.sin(a) * r * 0.62;
+                parts += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="' + c + '" stroke-width="' + w + '"/>';
             }
-
-            // Randomly downsample to the particle budget (random picks avoid moiré patterns)
-            const MAXP = 14000;
-            let count = pts.length / 2;
-            if (count > MAXP) {
-                const idx = Array.from({ length: count }, (_, i) => i);
-                for (let i = count - 1; i > 0; i--) {
-                    const r = Math.floor(Math.random() * (i + 1));
-                    const tmp = idx[i]; idx[i] = idx[r]; idx[r] = tmp;
-                }
-                const npts = [], ncolors = [];
-                for (let i = 0; i < MAXP; i++) {
-                    const s = idx[i];
-                    npts.push(pts[s * 2], pts[s * 2 + 1]);
-                    ncolors.push(colors[s * 3], colors[s * 3 + 1], colors[s * 3 + 2]);
-                }
-                pts = npts; colors = ncolors; count = MAXP;
-            }
-            return {
-                pts: new Float32Array(pts),
-                colors: new Uint8Array(colors),
-                count: count,
-                iw: img.naturalWidth,
-                ih: img.naturalHeight
-            };
+            return '<svg viewBox="0 0 ' + size + ' ' + size + '"><g class="gear-rotor">' + parts + '</g></svg>';
         }
 
-        function initParticles() {
-            N = isMobile() ? 6500 : 14000;
-            particles = new Float32Array(N * 8);
-            for (let j = 0; j < N; j++) {
-                const k = j * 8;
-                particles[k] = Math.random() * W;              // x
-                particles[k + 1] = Math.random() * H;          // y
-                const a = Math.random() * Math.PI * 2;
-                particles[k + 2] = Math.cos(a);                // scatter dir x
-                particles[k + 3] = Math.sin(a);                // scatter dir y
-                particles[k + 4] = 0.25 + Math.random() * 0.9; // scatter radius factor
-                particles[k + 5] = Math.random() * Math.PI * 2;// drift phase
-                particles[k + 6] = Math.random() * W;          // ambient home x
-                particles[k + 7] = Math.random() * H;          // ambient home y
-            }
+        function ringSVG(cfg) {
+            return '<svg viewBox="0 0 100 100"><g class="gear-rotor">' +
+                '<circle cx="50" cy="50" r="46" fill="none" stroke="' + cfg.color + '" stroke-width="' + (cfg.width * 0.5) + '" stroke-dasharray="' + cfg.dash + '"/>' +
+                '<circle cx="50" cy="50" r="30" fill="none" stroke="' + cfg.color + '" stroke-width="' + (cfg.width * 0.4) + '" stroke-dasharray="2 6"/>' +
+                '</g></svg>';
         }
 
-        function loadScenes() {
-            ready = true; // ambient hero scene needs no image
-            sceneSources.forEach((src, i) => {
-                const img = new Image();
-                img.onload = () => {
-                    scenes[i + 1] = sampleImage(img);
-                    computeSceneRects();
-                };
-                img.src = src;
-            });
-        }
+        slots.forEach(slot => {
+            const cfg = JSON.parse(slot.dataset.gear || slot.dataset.ring);
+            slot.innerHTML = slot.dataset.gear ? gearSVG(cfg) : ringSVG(cfg);
+            rotors.push({ el: slot.querySelector('.gear-rotor'), speed: cfg.speed, idle: cfg.idle || 0 });
+        });
 
-        const smooth = t => t * t * (3 - 2 * t);
-        const clamp01 = t => Math.max(0, Math.min(1, t));
-
-        // Map scroll to timeline: returns { idx, scatter, next, outro }
-        function timeline() {
-            const total = journey.offsetHeight - H;
-            const raw = clamp01((window.scrollY || 0) / Math.max(1, total));
-            scrollTarget = raw;
-            // ease scroll for buttery scrubbing
-            scrollSmooth += (scrollTarget - scrollSmooth) * (reducedMotion ? 1 : 0.085);
-            const t = scrollSmooth * NUM_SCENES; // 0 .. NUM_SCENES
-            let idx = Math.min(Math.floor(t), NUM_SCENES - 1);
-            let u = t - idx;
-            let scatter, target;
-            if (u < HOLD) {
-                scatter = 0; target = idx;
-            } else {
-                const p = (u - HOLD) / (1 - HOLD); // 0..1 across the transition
-                if (idx >= NUM_SCENES - 1) {
-                    // Last scene: dissolve out into ambient dust
-                    scatter = smooth(p);
-                    target = idx;
-                } else {
-                    scatter = Math.sin(p * Math.PI);          // out then back in
-                    target = p < 0.5 ? idx : idx + 1;         // switch identity mid-flight
-                }
-            }
-            const outro = (idx >= NUM_SCENES - 1 && u >= HOLD) ? smooth((u - HOLD) / (1 - HOLD)) : 0;
-            return { t, idx, u, scatter: smooth(scatter), target, outro };
-        }
-
-        function updateChapters(tl) {
-            // Chapter i is visible while its scene is the current target and formed
-            chapters.forEach(ch => {
-                const i = parseInt(ch.dataset.chapter, 10);
-                let vis = (i === tl.target) ? 1 - tl.scatter : 0;
-                if (i === NUM_SCENES - 1 && tl.outro > 0) vis = Math.max(0, 1 - tl.outro * 1.6);
-                ch.style.opacity = vis.toFixed(3);
-                ch.style.transform = 'translateY(' + ((1 - vis) * 24).toFixed(1) + 'px)';
-                ch.classList.toggle('is-active', vis > 0.5);
-            });
-        }
-
+        let t = 0;
         function frame() {
-            time += 0.016;
-            ctx.clearRect(0, 0, W, H);
-
-            if (ready && particles) {
-                const tl = timeline();
-                updateChapters(tl);
-
-                const scene = scenes[tl.target];           // null = ambient hero dust
-                const rect = scene ? sceneRects[tl.target] : null;
-                const s = tl.scatter;
-                const outro = tl.outro;
-                const maxR = Math.max(W, H) * 0.55;
-                const size = isMobile() ? 1.9 : 2.1;
-                const drift = reducedMotion ? 0 : 1;
-                const ease = reducedMotion ? 1 : 0.09;
-
-                for (let j = 0; j < N; j++) {
-                    const k = j * 8;
-                    const ph = particles[k + 5];
-                    let tx, ty, alpha, cr, cg, cb;
-
-                    if (scene && rect) {
-                        // Samples are pre-shuffled, so modulo covers the whole image evenly
-                        const si = j % scene.count;
-                        // Fly outward from the image along a per-particle direction + sinusoidal drift
-                        const pi = si * 2;
-                        const hx = rect.x + scene.pts[pi] * rect.w;
-                        const hy = rect.y + scene.pts[pi + 1] * rect.h;
-                        const rad = particles[k + 4] * maxR * s;
-                        // "2.4 +" keeps a gentle shimmer even when the image is fully formed
-                        const wob = (2.4 + 14 * s) * drift;
-                        tx = hx + particles[k + 2] * rad + Math.sin(time * 0.9 + ph) * wob;
-                        ty = hy + particles[k + 3] * rad + Math.cos(time * 0.7 + ph) * wob
-                             - outro * H * 0.12 * particles[k + 4];
-                        const ci = si * 3;
-                        cr = scene.colors[ci]; cg = scene.colors[ci + 1]; cb = scene.colors[ci + 2];
-                        alpha = 1 - s * 0.82;
-                        if (outro > 0) alpha = Math.max(0.06, alpha * (1 - outro * 0.8));
-                    } else {
-                        // Ambient dust: drifting starfield behind the hero
-                        tx = particles[k + 6] + Math.sin(time * 0.45 + ph) * 46 * drift;
-                        ty = particles[k + 7] + Math.cos(time * 0.36 + ph * 1.7) * 38 * drift;
-                        const c = AMBIENT[j % AMBIENT.length];
-                        cr = c[0]; cg = c[1]; cb = c[2];
-                        alpha = 0.18 + 0.2 * (0.5 + 0.5 * Math.sin(time + ph * 3));
-                    }
-
-                    particles[k]     += (tx - particles[k]) * ease;
-                    particles[k + 1] += (ty - particles[k + 1]) * ease;
-                    ctx.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',' + alpha.toFixed(3) + ')';
-                    ctx.fillRect(particles[k], particles[k + 1], size, size);
-                }
-            }
+            t += 0.016;
+            const y = window.scrollY || 0;
+            rotors.forEach(rt => {
+                const angle = y * rt.speed + (reducedMotion ? 0 : t * rt.idle);
+                rt.el.style.transform = 'rotate(' + angle.toFixed(2) + 'deg)';
+            });
             requestAnimationFrame(frame);
         }
-
-        window.addEventListener('resize', () => { resize(); if (!particles || (isMobile() ? 6500 : 14000) !== N) initParticles(); });
-        resize();
-        initParticles();
-        loadScenes();
         requestAnimationFrame(frame);
     })();
 
-    /* ================= UI behaviors ================= */
+    /* Hero collage parallax */
+    (function () {
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reducedMotion) return;
+        const layers = document.querySelectorAll('.collage-float');
+        function onScroll() {
+            const y = window.scrollY || 0;
+            layers.forEach(l => {
+                l.style.transform = 'translateY(' + (y * parseFloat(l.dataset.parallax)).toFixed(1) + 'px)';
+            });
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+    })();
 
-    // Scroll progress bar + navbar background
+    /* Scroll progress bar + navbar background */
     (function () {
         const bar = document.getElementById('scroll-progress');
         const nav = document.getElementById('navbar');
@@ -1177,16 +816,16 @@
             const max = document.documentElement.scrollHeight - window.innerHeight;
             bar.style.width = (Math.min(1, window.scrollY / Math.max(1, max)) * 100).toFixed(2) + '%';
             const solid = window.scrollY > 40;
-            nav.classList.toggle('bg-zinc-950/85', solid);
+            nav.classList.toggle('bg-[#faf8f5]/85', solid);
             nav.classList.toggle('backdrop-blur-xl', solid);
-            nav.classList.toggle('border-white/10', solid);
+            nav.classList.toggle('border-stone-200', solid);
             nav.classList.toggle('border-transparent', !solid);
         }
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
     })();
 
-    // Reveal-on-scroll
+    /* Reveal-on-scroll */
     (function () {
         const io = new IntersectionObserver(entries => {
             entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } });
@@ -1194,7 +833,7 @@
         document.querySelectorAll('.reveal').forEach(el => io.observe(el));
     })();
 
-    // Animated counters (hero stats)
+    /* Animated counters */
     (function () {
         const counters = document.querySelectorAll('.counter');
         const io = new IntersectionObserver(entries => {
@@ -1215,7 +854,7 @@
         counters.forEach(c => io.observe(c));
     })();
 
-    // Mobile menu
+    /* Mobile menu */
     (function () {
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
@@ -1234,10 +873,10 @@
         });
     })();
 
-    // Portfolio filters
+    /* Portfolio filters */
     (function () {
         const filterBtns = document.querySelectorAll('#portfolio-filters button');
-        const cards = document.querySelectorAll('#portfolio-grid .portfolio-card');
+        const cards = document.querySelectorAll('#portfolio-grid .pin-card');
         filterBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 filterBtns.forEach(b => b.classList.remove('active'));
@@ -1250,10 +889,11 @@
         });
     })();
 
-    // Project data + modal
+    /* Project data + modal */
     const projects = [
         {
             category: "SHORT FILM",
+            badge: "bg-amber-100 text-amber-700",
             title: "The Awakening",
             subtitle: "A film by Olukayode • Alternatefact Studios",
             image: "assets/awakening.jpg",
@@ -1264,6 +904,7 @@
         },
         {
             category: "SHORT FILM",
+            badge: "bg-violet-100 text-violet-700",
             title: "Beyond Lagos",
             subtitle: "A film by Olukayode • African Futures",
             image: "assets/beyond-lagos.jpg",
@@ -1274,6 +915,7 @@
         },
         {
             category: "CONCEPT ART",
+            badge: "bg-sky-100 text-sky-700",
             title: "Adorned",
             subtitle: "Concept Series • 2025",
             image: "assets/concept-art.jpg",
@@ -1284,6 +926,7 @@
         },
         {
             category: "CAMPAIGN",
+            badge: "bg-rose-100 text-rose-700",
             title: "One Choice",
             subtitle: "Public Awareness Campaign",
             image: "assets/one-choice.jpg",
@@ -1297,7 +940,7 @@
     function showProjectModal(i) {
         const project = projects[i];
         const modal = document.getElementById('project-modal');
-        document.getElementById('modal-category').innerHTML = '<span class="px-3 py-1 text-xs font-medium bg-purple-500/20 text-purple-400 rounded-full">' + project.category + '</span>';
+        document.getElementById('modal-category').innerHTML = '<span class="px-3 py-1 text-[11px] font-extrabold tracking-wider rounded-full ' + project.badge + '">' + project.category + '</span>';
         document.getElementById('modal-title').textContent = project.title;
         document.getElementById('modal-subtitle').textContent = project.subtitle;
         document.getElementById('modal-description').innerHTML = project.description;
@@ -1305,7 +948,7 @@
         document.getElementById('modal-year').textContent = project.year;
         document.getElementById('modal-role').textContent = project.role;
         document.getElementById('modal-image-container').innerHTML =
-            '<img src="' + project.image + '" alt="' + project.title + '" class="w-full rounded-2xl max-h-[52vh] object-contain bg-black/40">';
+            '<img src="' + project.image + '" alt="' + project.title + '" class="w-full max-h-[52vh] object-contain">';
         modal.classList.remove('hidden');
         modal.classList.add('flex');
         document.body.style.overflow = 'hidden';
@@ -1322,7 +965,7 @@
         if (e.key === 'Escape' && !document.getElementById('project-modal').classList.contains('hidden')) hideProjectModal();
     });
 
-    // Contact form (front-end demo)
+    /* Contact form (front-end demo) */
     (function () {
         const form = document.getElementById('contact-form');
         form.addEventListener('submit', function (e) {
@@ -1333,16 +976,14 @@
             btn.disabled = true;
             setTimeout(() => {
                 btn.innerHTML = 'Message Sent! ✓';
-                btn.style.background = '#22c55e';
-                btn.style.color = 'white';
+                btn.style.background = '#059669';
                 setTimeout(() => {
                     form.reset();
                     btn.innerHTML = originalText;
                     btn.style.background = '';
-                    btn.style.color = '';
                     btn.disabled = false;
                     const successMsg = document.createElement('div');
-                    successMsg.className = 'mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-emerald-400 text-sm';
+                    successMsg.className = 'mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-[1.25rem] text-emerald-700 text-sm font-semibold text-center';
                     successMsg.innerHTML = 'Thank you! We\'ll reply within 24 hours. In the meantime, follow us on <a href="https://www.instagram.com/alternatefact_studios" class="underline">Instagram</a> for daily inspiration.';
                     form.appendChild(successMsg);
                     setTimeout(() => {
@@ -1355,7 +996,7 @@
         });
     })();
 
-    // Smooth scroll for anchor links
+    /* Smooth scroll for anchor links */
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
