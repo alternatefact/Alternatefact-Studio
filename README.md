@@ -7,11 +7,15 @@ Portfolio site for Alternatefact Studios: AI short films, UGC, concept art and c
 Light, editorial "designer" aesthetic on a warm paper background:
 
 - **Fonts** — Fraunces (display serif, with italic accents) + Manrope (body/UI), self-hosted.
-- **Machine engine background** — line-art gears and dashed flywheel rings drawn as
-  SVG in a fixed layer behind the page. They idle slowly and spin with scroll;
-  interlocking pairs turn in opposite directions. Configured via `data-gear` /
-  `data-ring` JSON on the `.gear-slot` elements inside `#machine-layer` in
-  `index.html` (`speed` = degrees per scrolled pixel, `idle` = degrees per second).
+- **Watch-movement background** — a wristwatch calibre drawn as SVG in a fixed
+  layer behind the page: toothed train wheels with crescent cutouts and ruby
+  jewel bearings, a mainspring barrel with a coiled spring, a bridge plate with
+  screws, and a full escapement (escape wheel ticking in discrete steps, pallet
+  fork rocking, balance wheel oscillating with a breathing hairspring). Wheels
+  also spin with scroll; meshed pairs turn in opposite directions. Configured
+  via `data-part` JSON on the `.gear-slot` elements inside `#machine-layer` in
+  `index.html` (`speed` = degrees per scrolled pixel, `idle` = degrees per
+  second, `freq` = escapement beats per second).
 - **Hero collage** — the studio's real artwork as tilted, overlapping cards with
   per-card scroll parallax (`data-parallax` on `.collage-float`).
 - **Pinterest-style portfolio** — masonry columns (`columns-*` utilities) with

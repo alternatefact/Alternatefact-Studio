@@ -170,17 +170,24 @@
 <body class="overflow-x-hidden antialiased">
     <div id="scroll-progress"></div>
 
-    <!-- Scroll-driven machine engine background -->
+    <!-- Watch-movement background: gear train, mainspring barrel, escapement -->
     <div id="machine-layer" aria-hidden="true">
-        <div class="gear-slot" data-gear='{"r":150,"teeth":16,"speed":0.06,"idle":2.2,"color":"#ddd6fe","width":2}'   style="top:-70px;right:-60px;width:320px;height:320px;opacity:0.9;"></div>
-        <div class="gear-slot" data-gear='{"r":86,"teeth":10,"speed":-0.096,"idle":-3.5,"color":"#c4b5fd","width":2}' style="top:196px;right:196px;width:190px;height:190px;opacity:0.85;"></div>
-        <div class="gear-slot" data-gear='{"r":120,"teeth":14,"speed":-0.05,"idle":-1.8,"color":"#fde68a","width":2}' style="top:34%;left:-90px;width:260px;height:260px;opacity:0.9;"></div>
-        <div class="gear-slot" data-gear='{"r":66,"teeth":8,"speed":0.09,"idle":3.2,"color":"#ddd6fe","width":2}'    style="top:calc(34% + 208px);left:118px;width:150px;height:150px;opacity:0.85;"></div>
-        <div class="gear-slot" data-gear='{"r":110,"teeth":12,"speed":0.055,"idle":2,"color":"#c4b5fd","width":2}'   style="bottom:-60px;right:12%;width:240px;height:240px;opacity:0.85;"></div>
-        <div class="gear-slot" data-gear='{"r":58,"teeth":8,"speed":-0.1,"idle":-3.8,"color":"#fcd34d","width":2}'   style="bottom:118px;right:calc(12% + 178px);width:130px;height:130px;opacity:0.8;"></div>
-        <!-- dashed flywheel rings -->
-        <div class="gear-slot" data-ring='{"speed":0.03,"idle":1.2,"color":"#e9d5ff","width":2,"dash":"10 8"}' style="top:42%;right:6%;width:300px;height:300px;opacity:0.8;"></div>
-        <div class="gear-slot" data-ring='{"speed":-0.04,"idle":-1.6,"color":"#fde68a","width":2,"dash":"3 9"}' style="bottom:16%;left:4%;width:230px;height:230px;opacity:0.8;"></div>
+        <!-- top-right gear train under a bridge -->
+        <div class="gear-slot" data-part='{"kind":"wheel","teeth":30,"holes":5,"speed":0.05,"idle":2,"tone":"violet"}'    style="top:-80px;right:-60px;width:330px;height:330px;opacity:0.95;"></div>
+        <div class="gear-slot" data-part='{"kind":"wheel","teeth":16,"holes":3,"speed":-0.094,"idle":-3.75,"tone":"amber"}' style="top:194px;right:214px;width:180px;height:180px;opacity:0.9;"></div>
+        <div class="gear-slot" data-part='{"kind":"bridge"}' style="top:8px;right:96px;width:330px;height:130px;opacity:0.95;transform:rotate(-32deg);"></div>
+        <!-- small seconds wheel, top-left -->
+        <div class="gear-slot" data-part='{"kind":"wheel","teeth":20,"holes":4,"speed":0.075,"idle":2.6,"tone":"violet"}' style="top:96px;left:5%;width:150px;height:150px;opacity:0.9;"></div>
+        <div class="gear-slot" data-part='{"kind":"wheel","teeth":12,"holes":3,"speed":-0.125,"idle":-4.3,"tone":"amber"}' style="top:212px;left:calc(5% + 118px);width:92px;height:92px;opacity:0.85;"></div>
+        <!-- mainspring barrel + intermediate wheel, left -->
+        <div class="gear-slot" data-part='{"kind":"barrel","speed":0.028,"idle":0.7}' style="top:32%;left:-85px;width:280px;height:280px;opacity:0.95;"></div>
+        <div class="gear-slot" data-part='{"kind":"wheel","teeth":14,"holes":3,"speed":-0.062,"idle":-1.55,"tone":"violet"}' style="top:calc(32% + 210px);left:132px;width:150px;height:150px;opacity:0.9;"></div>
+        <!-- escapement: escape wheel + pallet fork + balance wheel with hairspring -->
+        <div class="gear-slot" data-part='{"kind":"escape","teeth":15,"freq":1.5,"speed":0.08}' style="bottom:74px;right:305px;width:175px;height:175px;opacity:0.95;"></div>
+        <div class="gear-slot" data-part='{"kind":"fork","freq":1.5,"amp":10}' style="bottom:212px;right:206px;width:110px;height:176px;opacity:0.95;transform:rotate(146deg);"></div>
+        <div class="gear-slot" data-part='{"kind":"balance","freq":1.5,"amp":32}' style="bottom:-50px;right:-45px;width:310px;height:310px;opacity:0.95;"></div>
+        <!-- extra small wheel, top-center -->
+        <div class="gear-slot" data-part='{"kind":"wheel","teeth":14,"holes":3,"speed":-0.07,"idle":-2.8,"tone":"amber"}' style="top:-36px;left:38%;width:130px;height:130px;opacity:0.85;"></div>
     </div>
 
     <!-- NAVBAR -->
@@ -733,60 +740,207 @@
 
     <script>
     /* ==========================================================================
-       MACHINE ENGINE BACKGROUND
-       Line-art gears and flywheel rings, drawn as SVG, that idle slowly and
-       spin with scroll — interlocking pairs turn in opposite directions,
-       like a futuristic engine ticking over behind the page.
+       WATCH MOVEMENT BACKGROUND
+       A wristwatch calibre in SVG line-art: a gear train of toothed wheels
+       with crescent cutouts and jewel bearings, a mainspring barrel, a bridge
+       plate with screws, and a full escapement — escape wheel ticking in
+       discrete steps, pallet fork rocking, balance wheel oscillating with a
+       breathing hairspring. Wheels also spin with scroll; meshed pairs turn
+       in opposite directions.
        ========================================================================== */
     (function () {
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const slots = document.querySelectorAll('#machine-layer .gear-slot');
         const rotors = [];
 
-        function gearSVG(cfg) {
-            const r = cfg.r, teeth = cfg.teeth, c = cfg.color, w = cfg.width;
-            const size = (r + 22) * 2;
-            const mid = size / 2;
-            let parts = '';
-            // teeth
+        const TONES = {
+            violet: { stroke: '#b7a2f5', fill: 'rgba(237,233,254,0.55)' },
+            amber:  { stroke: '#f2c14e', fill: 'rgba(254,243,199,0.55)' }
+        };
+        const JEWEL = 'fill="rgba(244,63,94,0.3)" stroke="rgba(244,63,94,0.55)" stroke-width="1.5"';
+
+        const P = (cx, cy, r, a) => (cx + r * Math.cos(a)).toFixed(2) + ',' + (cy + r * Math.sin(a)).toFixed(2);
+
+        // Toothed wheel outline (trapezoidal teeth, like a watch train wheel)
+        function toothedOutline(cx, cy, rTip, teeth) {
+            const rRoot = rTip * 0.86, step = Math.PI * 2 / teeth;
+            const halfTip = step * 0.16, flank = step * 0.14;
+            let d = '';
             for (let i = 0; i < teeth; i++) {
-                const a = (360 / teeth) * i;
-                parts += '<rect x="' + (mid - 7) + '" y="' + (mid - r - 14) + '" width="14" height="18" rx="4" fill="none" stroke="' + c + '" stroke-width="' + w + '" transform="rotate(' + a + ' ' + mid + ' ' + mid + ')"/>';
+                const a = i * step;
+                d += (i ? 'L' : 'M') + P(cx, cy, rRoot, a - halfTip - flank) + ' ';
+                d += 'L' + P(cx, cy, rTip, a - halfTip) + ' ';
+                d += 'L' + P(cx, cy, rTip, a + halfTip) + ' ';
+                d += 'L' + P(cx, cy, rRoot, a + halfTip + flank) + ' ';
             }
-            // rim + hub
-            parts += '<circle cx="' + mid + '" cy="' + mid + '" r="' + r + '" fill="none" stroke="' + c + '" stroke-width="' + w + '"/>';
-            parts += '<circle cx="' + mid + '" cy="' + mid + '" r="' + (r * 0.62) + '" fill="none" stroke="' + c + '" stroke-width="' + w + '"/>';
-            parts += '<circle cx="' + mid + '" cy="' + mid + '" r="' + (r * 0.16) + '" fill="none" stroke="' + c + '" stroke-width="' + w + '"/>';
-            // spokes
-            for (let i = 0; i < 5; i++) {
-                const a = (Math.PI * 2 / 5) * i;
-                const x1 = mid + Math.cos(a) * r * 0.16, y1 = mid + Math.sin(a) * r * 0.16;
-                const x2 = mid + Math.cos(a) * r * 0.62, y2 = mid + Math.sin(a) * r * 0.62;
-                parts += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="' + c + '" stroke-width="' + w + '"/>';
-            }
-            return '<svg viewBox="0 0 ' + size + ' ' + size + '"><g class="gear-rotor">' + parts + '</g></svg>';
+            return d + 'Z';
         }
 
-        function ringSVG(cfg) {
-            return '<svg viewBox="0 0 100 100"><g class="gear-rotor">' +
-                '<circle cx="50" cy="50" r="46" fill="none" stroke="' + cfg.color + '" stroke-width="' + (cfg.width * 0.5) + '" stroke-dasharray="' + cfg.dash + '"/>' +
-                '<circle cx="50" cy="50" r="30" fill="none" stroke="' + cfg.color + '" stroke-width="' + (cfg.width * 0.4) + '" stroke-dasharray="2 6"/>' +
+        // Archimedean spiral (hairspring / mainspring)
+        function spiralPath(cx, cy, r0, r1, turns) {
+            const steps = Math.round(turns * 40);
+            let d = '';
+            for (let i = 0; i <= steps; i++) {
+                const p = i / steps;
+                const a = p * turns * Math.PI * 2;
+                const r = r0 + (r1 - r0) * p;
+                d += (i ? 'L' : 'M') + P(cx, cy, r, a) + ' ';
+            }
+            return d;
+        }
+
+        // Train wheel: teeth + rim + crescent cutout holes + spokes + jewel bearing
+        function wheelSVG(cfg) {
+            const S = 100, c = S / 2, tone = TONES[cfg.tone || 'violet'];
+            const rTip = 47, rRim = rTip * 0.8, rHub = rTip * 0.17;
+            const holes = cfg.holes || 4;
+            let d = toothedOutline(c, c, rTip, cfg.teeth);
+            const hcR = rRim * 0.55;
+            const hr = Math.min(Math.PI * hcR / holes * 0.68, (rRim - rHub) * 0.42).toFixed(2);
+            for (let i = 0; i < holes; i++) {
+                const a = (Math.PI * 2 / holes) * i + Math.PI / holes;
+                const hx = (c + Math.cos(a) * hcR).toFixed(2), hy = (c + Math.sin(a) * hcR).toFixed(2);
+                d += ' M' + hx + ',' + hy + ' m' + hr + ',0 a' + hr + ',' + hr + ' 0 1,0 ' + (-2 * hr) + ',0 a' + hr + ',' + hr + ' 0 1,0 ' + (2 * hr) + ',0 Z';
+            }
+            return '<svg viewBox="0 0 ' + S + ' ' + S + '"><g class="rotor" data-pivot="' + c + ',' + c + '">' +
+                '<path d="' + d + '" fill="' + tone.fill + '" stroke="' + tone.stroke + '" stroke-width="1.6" fill-rule="evenodd"/>' +
+                '<circle cx="' + c + '" cy="' + c + '" r="' + rRim + '" fill="none" stroke="' + tone.stroke + '" stroke-width="1.2"/>' +
+                '<circle cx="' + c + '" cy="' + c + '" r="' + rHub + '" fill="none" stroke="' + tone.stroke + '" stroke-width="1.4"/>' +
+                '<circle cx="' + c + '" cy="' + c + '" r="' + (rHub * 0.55) + '" ' + JEWEL + '/>' +
                 '</g></svg>';
         }
 
+        // Mainspring barrel: toothed drum containing a coiled spring
+        function barrelSVG() {
+            const S = 100, c = S / 2, tone = TONES.violet;
+            return '<svg viewBox="0 0 ' + S + ' ' + S + '"><g class="rotor" data-pivot="' + c + ',' + c + '">' +
+                '<path d="' + toothedOutline(c, c, 47, 36) + '" fill="' + tone.fill + '" stroke="' + tone.stroke + '" stroke-width="1.4"/>' +
+                '<circle cx="' + c + '" cy="' + c + '" r="38" fill="none" stroke="' + tone.stroke + '" stroke-width="1.2"/>' +
+                '<path d="' + spiralPath(c, c, 6, 35, 4.5) + '" fill="none" stroke="' + tone.stroke + '" stroke-width="1.6" stroke-linecap="round"/>' +
+                '<circle cx="' + c + '" cy="' + c + '" r="4.5" ' + JEWEL + '/>' +
+                '</g></svg>';
+        }
+
+        // Escape wheel: hooked, pointed teeth (ticks forward in steps)
+        function escapeSVG(cfg) {
+            const S = 100, c = S / 2, tone = TONES.amber;
+            const teeth = cfg.teeth, rTip = 46, rRoot = 32, step = Math.PI * 2 / teeth;
+            let d = '';
+            for (let i = 0; i < teeth; i++) {
+                const a = i * step;
+                d += (i ? 'L' : 'M') + P(c, c, rRoot, a - step * 0.55) + ' ';
+                d += 'L' + P(c, c, rTip, a) + ' ';
+                d += 'L' + P(c, c, rRoot, a + step * 0.08) + ' ';
+            }
+            d += 'Z';
+            let spokes = '';
+            for (let i = 0; i < 4; i++) {
+                const a = (Math.PI / 2) * i + Math.PI / 4;
+                spokes += '<line x1="' + P(c, c, 5, a).replace(',', '" y1="') + '" x2="' + P(c, c, rRoot - 2, a).replace(',', '" y2="') + '" stroke="' + tone.stroke + '" stroke-width="1.4"/>';
+            }
+            return '<svg viewBox="0 0 ' + S + ' ' + S + '"><g class="rotor" data-pivot="' + c + ',' + c + '">' +
+                '<path d="' + d + '" fill="' + tone.fill + '" stroke="' + tone.stroke + '" stroke-width="1.5"/>' +
+                '<circle cx="' + c + '" cy="' + c + '" r="' + (rRoot - 2) + '" fill="none" stroke="' + tone.stroke + '" stroke-width="1"/>' +
+                spokes +
+                '<circle cx="' + c + '" cy="' + c + '" r="4" ' + JEWEL + '/>' +
+                '</g></svg>';
+        }
+
+        // Pallet fork: anchor with two jeweled pallets and a forked lever
+        function forkSVG() {
+            const tone = TONES.violet;
+            return '<svg viewBox="0 0 100 160"><g class="rotor" data-pivot="50,46">' +
+                '<circle cx="50" cy="46" r="7" fill="' + tone.fill + '" stroke="' + tone.stroke + '" stroke-width="1.6"/>' +
+                '<circle cx="50" cy="46" r="2.6" ' + JEWEL + '/>' +
+                '<path d="M50,46 L22,104 M50,46 L78,104" fill="none" stroke="' + tone.stroke + '" stroke-width="3" stroke-linecap="round"/>' +
+                '<rect x="16" y="100" width="10" height="16" rx="2" transform="rotate(24 21 108)" ' + JEWEL + '/>' +
+                '<rect x="74" y="100" width="10" height="16" rx="2" transform="rotate(-24 79 108)" ' + JEWEL + '/>' +
+                '<path d="M50,46 L50,14 M40,4 L50,16 L60,4" fill="none" stroke="' + tone.stroke + '" stroke-width="2.6" stroke-linecap="round"/>' +
+                '</g></svg>';
+        }
+
+        // Balance wheel with breathing hairspring
+        function balanceSVG() {
+            const S = 100, c = S / 2, tone = TONES.violet;
+            let screws = '';
+            for (let i = 0; i < 6; i++) {
+                const a = (Math.PI * 2 / 6) * i;
+                screws += '<circle cx="' + (c + Math.cos(a) * 42).toFixed(1) + '" cy="' + (c + Math.sin(a) * 42).toFixed(1) + '" r="2.4" fill="' + tone.stroke + '"/>';
+            }
+            return '<svg viewBox="0 0 ' + S + ' ' + S + '">' +
+                '<g class="rotor" data-pivot="' + c + ',' + c + '">' +
+                '<circle cx="' + c + '" cy="' + c + '" r="42" fill="none" stroke="' + tone.stroke + '" stroke-width="4.5"/>' +
+                '<path d="M' + (c - 42) + ',' + c + ' L' + (c + 42) + ',' + c + ' M' + c + ',' + (c - 42) + ' L' + c + ',' + (c + 42) + '" stroke="' + tone.stroke + '" stroke-width="2"/>' +
+                screws +
+                '</g>' +
+                '<g class="spring" data-pivot="' + c + ',' + c + '">' +
+                '<path d="' + spiralPath(c, c, 4, 30, 5) + '" fill="none" stroke="' + tone.stroke + '" stroke-width="1.2" stroke-linecap="round"/>' +
+                '</g>' +
+                '<circle cx="' + c + '" cy="' + c + '" r="3.4" ' + JEWEL + '/>' +
+                '</svg>';
+        }
+
+        // Static bridge plate with polished screws and a jewel
+        function bridgeSVG() {
+            const tone = TONES.violet;
+            const screw = (x, y) =>
+                '<circle cx="' + x + '" cy="' + y + '" r="7" fill="rgba(255,255,255,0.6)" stroke="' + tone.stroke + '" stroke-width="1.6"/>' +
+                '<line x1="' + (x - 4) + '" y1="' + y + '" x2="' + (x + 4) + '" y2="' + y + '" stroke="' + tone.stroke + '" stroke-width="1.6" transform="rotate(40 ' + x + ' ' + y + ')"/>';
+            return '<svg viewBox="0 0 260 100">' +
+                '<path d="M24,72 C10,58 12,34 30,24 L212,10 C236,8 252,26 250,48 C248,70 230,84 208,82 L52,88 C40,88 32,82 24,72 Z"' +
+                ' fill="rgba(245,243,255,0.5)" stroke="' + tone.stroke + '" stroke-width="1.6"/>' +
+                screw(42, 56) + screw(224, 44) +
+                '<circle cx="132" cy="48" r="6" ' + JEWEL + '/>' +
+                '<circle cx="132" cy="48" r="13" fill="none" stroke="' + tone.stroke + '" stroke-width="1.2"/>' +
+                '</svg>';
+        }
+
         slots.forEach(slot => {
-            const cfg = JSON.parse(slot.dataset.gear || slot.dataset.ring);
-            slot.innerHTML = slot.dataset.gear ? gearSVG(cfg) : ringSVG(cfg);
-            rotors.push({ el: slot.querySelector('.gear-rotor'), speed: cfg.speed, idle: cfg.idle || 0 });
+            const cfg = JSON.parse(slot.dataset.part);
+            let svg = '';
+            if (cfg.kind === 'wheel') svg = wheelSVG(cfg);
+            else if (cfg.kind === 'barrel') svg = barrelSVG();
+            else if (cfg.kind === 'escape') svg = escapeSVG(cfg);
+            else if (cfg.kind === 'fork') svg = forkSVG();
+            else if (cfg.kind === 'balance') svg = balanceSVG();
+            else if (cfg.kind === 'bridge') svg = bridgeSVG();
+            slot.innerHTML = svg;
+            const rotor = slot.querySelector('.rotor');
+            if (rotor) rotors.push({ el: rotor, cfg, pivot: rotor.dataset.pivot });
+            const spring = slot.querySelector('.spring');
+            if (spring) rotors.push({ el: spring, cfg: { kind: 'spring', freq: cfg.freq }, pivot: spring.dataset.pivot });
         });
 
+        const easeOut = x => 1 - Math.pow(1 - Math.min(x, 1), 3);
         let t = 0;
         function frame() {
             t += 0.016;
             const y = window.scrollY || 0;
+            const idleOn = reducedMotion ? 0 : 1;
             rotors.forEach(rt => {
-                const angle = y * rt.speed + (reducedMotion ? 0 : t * rt.idle);
-                rt.el.style.transform = 'rotate(' + angle.toFixed(2) + 'deg)';
+                const k = rt.cfg.kind, pv = rt.pivot;
+                let tf = '';
+                if (k === 'wheel' || k === 'barrel') {
+                    const a = y * rt.cfg.speed + t * (rt.cfg.idle || 0) * idleOn;
+                    tf = 'rotate(' + a.toFixed(2) + ' ' + pv.replace(',', ' ') + ')';
+                } else if (k === 'escape') {
+                    // tick forward in discrete steps, like a real escapement
+                    const stepA = 360 / rt.cfg.teeth;
+                    const ph = t * rt.cfg.freq * idleOn;
+                    const a = (Math.floor(ph) + easeOut((ph - Math.floor(ph)) * 3.2)) * stepA + y * rt.cfg.speed;
+                    tf = 'rotate(' + a.toFixed(2) + ' ' + pv.replace(',', ' ') + ')';
+                } else if (k === 'fork') {
+                    const a = Math.sin(t * rt.cfg.freq * Math.PI * 2) * rt.cfg.amp * idleOn;
+                    tf = 'rotate(' + a.toFixed(2) + ' ' + pv.replace(',', ' ') + ')';
+                } else if (k === 'balance') {
+                    const a = Math.sin(t * rt.cfg.freq * Math.PI * 2 + Math.PI / 2) * rt.cfg.amp * idleOn;
+                    tf = 'rotate(' + a.toFixed(2) + ' ' + pv.replace(',', ' ') + ')';
+                } else if (k === 'spring') {
+                    const s = 1 + 0.06 * Math.sin(t * rt.cfg.freq * Math.PI * 2 + Math.PI / 2) * idleOn;
+                    const p = pv.split(',');
+                    tf = 'translate(' + p[0] + ' ' + p[1] + ') scale(' + s.toFixed(3) + ') translate(-' + p[0] + ' -' + p[1] + ')';
+                }
+                rt.el.setAttribute('transform', tf);
             });
             requestAnimationFrame(frame);
         }
