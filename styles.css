@@ -65,7 +65,7 @@ a { color: inherit; text-decoration: none; }
   transform-origin: left center;
 }
 
-/* 3D canvas */
+/* 3D canvas — kept faint so the writing always leads */
 #machineCanvas {
   position: fixed;
   inset: 0;
@@ -74,7 +74,7 @@ a { color: inherit; text-decoration: none; }
   z-index: 1;
   pointer-events: none;
   display: block;
-  opacity: 0.9;
+  opacity: 0.42;
 }
 
 /* Fixed chapter marker */
@@ -620,6 +620,32 @@ a { color: inherit; text-decoration: none; }
 }
 .foot-back:hover { color: var(--brass); gap: 12px; }
 
+/* ---------- Text legibility over the machinery ----------
+   A soft "paper halo" behind type lifts it off the 3D layer. */
+.hero-title,
+.section-title {
+  text-shadow:
+    0 0 12px var(--paper),
+    0 0 28px var(--paper),
+    0 0 56px var(--paper),
+    0 0 90px var(--paper);
+}
+.hero-desc,
+.about-body,
+.chapter p,
+.chapter-head h3,
+.approach-item p,
+.approach-item h3,
+.quote-text,
+.work-info h3,
+.stat-num,
+.hero-meta {
+  text-shadow:
+    0 0 6px var(--paper),
+    0 0 14px var(--paper),
+    0 0 26px var(--paper);
+}
+
 /* ---------- Hero stats ---------- */
 .hero-stats {
   margin-top: 48px;
@@ -953,6 +979,7 @@ a { color: inherit; text-decoration: none; }
   .foot { grid-template-columns: 1fr; gap: 16px; }
   .foot-col-right { align-items: flex-start; }
 
+  #machineCanvas { opacity: 0.3; }
   .hero-stats { gap: 32px; flex-wrap: wrap; }
   .stat-num { font-size: 34px; }
   .quotes { grid-template-columns: 1fr; gap: 32px; }
