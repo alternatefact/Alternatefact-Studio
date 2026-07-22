@@ -620,6 +620,307 @@ a { color: inherit; text-decoration: none; }
 }
 .foot-back:hover { color: var(--brass); gap: 12px; }
 
+/* ---------- Hero stats ---------- */
+.hero-stats {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 64px;
+}
+.stat-block { display: flex; flex-direction: column; gap: 4px; }
+.stat-num {
+  font-family: 'Fraunces', serif;
+  font-size: 44px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1;
+}
+.stat-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--ink-mute);
+}
+
+/* ---------- Inline + chapter links ---------- */
+.inline-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--brass-deep);
+  border-bottom: 1px solid var(--brass-deep);
+  padding-bottom: 2px;
+  transition: color .3s, border-color .3s;
+}
+.inline-link:hover { color: var(--copper); border-color: var(--copper); }
+.chapter-link {
+  display: inline-block;
+  margin-top: 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--brass-deep);
+  transition: color .3s;
+}
+.chapter-link:hover { color: var(--copper); }
+
+/* ---------- About ---------- */
+.about-body {
+  max-width: 720px;
+  margin-bottom: 80px;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+.about-body p + p { margin-top: 1em; }
+.about-facts .chapter-head h3 { font-size: 40px; }
+
+/* ---------- Portfolio filters ---------- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: -32px 0 48px;
+}
+.filter-pill {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 9px 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background .3s, color .3s, border-color .3s;
+}
+.filter-pill:hover { border-color: var(--ink); color: var(--ink); }
+.filter-pill.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+.work-more { margin-top: 56px; }
+
+/* ---------- Testimonials ---------- */
+.quotes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+}
+.quote-card {
+  border-top: 1px solid var(--line-strong);
+  padding-top: 28px;
+}
+.quote-text {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-size: 21px;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.quote-who {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.12em;
+}
+.quote-name { font-size: 11px; color: var(--brass-deep); font-weight: 500; }
+.quote-role { font-size: 11px; color: var(--ink-mute); }
+
+/* ---------- Contact form (dark CTA section) ---------- */
+.contact-form {
+  margin-top: 72px;
+  max-width: 680px;
+  display: grid;
+  gap: 14px;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+  width: 100%;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  color: var(--paper);
+  background: rgba(242, 236, 224, 0.06);
+  border: 1px solid rgba(242, 236, 224, 0.28);
+  border-radius: 3px;
+  padding: 15px 18px;
+  outline: none;
+  transition: border-color .3s, background .3s;
+}
+.contact-form input::placeholder,
+.contact-form textarea::placeholder { color: rgba(242, 236, 224, 0.45); }
+.contact-form select { color: rgba(242, 236, 224, 0.8); }
+.contact-form select option { color: var(--ink); background: var(--paper); }
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+  border-color: var(--brass);
+  background: rgba(242, 236, 224, 0.1);
+}
+.contact-form textarea { resize: vertical; min-height: 130px; }
+.form-submit {
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 16px 22px;
+  border: none;
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background .3s, transform .35s cubic-bezier(.16,1,.3,1);
+}
+.form-submit:hover:not(:disabled) { background: var(--brass); color: var(--paper); transform: translateY(-2px); }
+.form-submit:disabled { opacity: 0.7; cursor: wait; }
+.form-success {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--brass);
+  border: 1px solid rgba(184, 132, 60, 0.5);
+  border-radius: 3px;
+  padding: 14px 18px;
+}
+.form-success a { color: var(--paper); border-bottom: 1px solid rgba(242,236,224,0.4); }
+
+.foot-social a { transition: color .3s; }
+.foot-social a:hover { color: var(--brass); }
+
+/* ---------- Project modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(26, 22, 19, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal-overlay[hidden] { display: none; }
+.modal-card {
+  background: var(--paper);
+  color: var(--ink);
+  width: 100%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  animation: modalRise .45s cubic-bezier(.16,1,.3,1);
+}
+@keyframes modalRise {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.modal-top {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.modal-category {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--brass-deep);
+}
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 30px;
+  line-height: 1;
+  color: var(--ink-mute);
+  cursor: pointer;
+  transition: color .3s;
+}
+.modal-close:hover { color: var(--ink); }
+.modal-image {
+  background: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+.modal-image img {
+  width: 100%;
+  max-height: 46vh;
+  object-fit: contain;
+  margin: 0 auto;
+}
+.modal-body {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 40px;
+  padding: 32px 28px 40px;
+}
+.modal-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 400;
+  font-size: 40px;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.modal-subtitle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--ink-mute);
+  margin-bottom: 22px;
+}
+.modal-description { font-size: 15px; line-height: 1.65; color: var(--ink-soft); }
+.modal-description p + p { margin-top: 1em; }
+.modal-description em { color: var(--brass-deep); }
+.modal-details {
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  padding: 22px;
+  align-self: start;
+}
+.modal-details-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--ink-mute);
+  margin-bottom: 16px;
+}
+.modal-details dt {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--ink-mute);
+  margin-top: 14px;
+}
+.modal-details dt:first-child { margin-top: 0; }
+.modal-details dd { font-size: 14px; font-weight: 600; color: var(--ink); margin-top: 2px; }
+.modal-insta {
+  display: inline-block;
+  margin-top: 22px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--brass-deep);
+  border-bottom: 1px solid var(--brass-deep);
+  padding-bottom: 2px;
+  transition: color .3s, border-color .3s;
+}
+.modal-insta:hover { color: var(--copper); border-color: var(--copper); }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 900px) {
   .nav { padding: 18px 20px; }
@@ -651,4 +952,11 @@ a { color: inherit; text-decoration: none; }
   .cta { padding: 100px 20px 40px; }
   .foot { grid-template-columns: 1fr; gap: 16px; }
   .foot-col-right { align-items: flex-start; }
+
+  .hero-stats { gap: 32px; flex-wrap: wrap; }
+  .stat-num { font-size: 34px; }
+  .quotes { grid-template-columns: 1fr; gap: 32px; }
+  .form-row { grid-template-columns: 1fr; }
+  .filters { margin-top: -16px; }
+  .modal-body { grid-template-columns: 1fr; gap: 28px; }
 }

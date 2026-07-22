@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Alternatefact Studios — Alternate realities, engineered.</title>
-<meta name="description" content="Alternatefact Studios crafts AI-driven short films, concept art and scroll-stopping content. A workshop of alternate realities, engineered by hand." />
+<meta name="description" content="Alternatefact Studios crafts AI-driven short films, UGC, concept art and scroll-stopping content. A workshop of alternate realities, engineered by hand." />
 <meta property="og:title" content="Alternatefact Studios" />
 <meta property="og:description" content="A workshop of alternate realities, engineered by hand." />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23b8843c'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23f5f0e6'/%3E%3C/svg%3E" />
@@ -44,21 +44,23 @@
 </div>
 
 <!-- Nav -->
-<nav class="nav" data-testid="site-nav">
-  <a href="#top" class="nav-brand" data-testid="nav-brand">
+<nav class="nav">
+  <a href="#top" class="nav-brand">
     <span class="brand-mark">A/F</span>
     <span class="brand-word">Alternatefact <em>Studios</em></span>
   </a>
   <ul class="nav-links">
-    <li><a href="#work" data-testid="nav-work">Work</a></li>
-    <li><a href="#manifesto" data-testid="nav-manifesto">Manifesto</a></li>
-    <li><a href="#approach" data-testid="nav-approach">Approach</a></li>
-    <li><a href="#contact" class="nav-cta" data-testid="nav-contact">Commission <span aria-hidden="true">↗</span></a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Work</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener">Instagram ↗</a></li>
+    <li><a href="#contact" class="nav-cta">Start a project <span aria-hidden="true">↗</span></a></li>
   </ul>
 </nav>
 
 <!-- HERO -->
-<section class="hero" id="top" data-testid="hero-section">
+<section class="hero" id="top">
   <div class="hero-meta">
     <div class="meta-block">
       <span class="meta-label">EST.</span>
@@ -66,7 +68,7 @@
     </div>
     <div class="meta-block">
       <span class="meta-label">LAT.</span>
-      <span class="meta-val">06°27′N · 03°23′E</span>
+      <span class="meta-val">51°30′N · 00°07′W</span>
     </div>
     <div class="meta-block meta-block-right">
       <span class="meta-label">FILE №</span>
@@ -74,23 +76,38 @@
     </div>
   </div>
 
-  <h1 class="hero-title" data-testid="hero-title">
+  <h1 class="hero-title">
     <span class="line"><span class="word">Alternate <em>realities,</em></span></span>
     <span class="line"><span class="word">engineered by hand.</span></span>
   </h1>
 
   <div class="hero-foot">
     <p class="hero-desc reveal">
-      A workshop of AI-driven short films, concept art and scroll-stopping content.
+      A workshop of AI short films, UGC, concept art and scroll-stopping content.
       We build fiction the way a watchmaker builds a movement — piece by piece,
       brass by brass, until it ticks.
     </p>
     <div class="hero-cta-row reveal">
-      <a href="#work" class="btn-primary" data-testid="hero-view-work">
-        <span>View the workshop</span>
+      <a href="#portfolio" class="btn-primary">
+        <span>Explore our work</span>
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M13.5 4.5l7.5 7.5-7.5 7.5-1.4-1.4L17.2 13H3v-2h14.2l-5.1-5.1z"/></svg>
       </a>
-      <a href="#contact" class="btn-ghost" data-testid="hero-commission">Commission a piece</a>
+      <a href="#contact" class="btn-ghost">Start a project</a>
+    </div>
+  </div>
+
+  <div class="hero-stats reveal">
+    <div class="stat-block">
+      <span class="stat-num counter" data-target="120" data-suffix="+">0</span>
+      <span class="stat-label">PROJECTS DELIVERED</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-num counter" data-target="40" data-suffix="+">0</span>
+      <span class="stat-label">BRANDS PARTNERED</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-num counter" data-target="15" data-suffix="M+">0</span>
+      <span class="stat-label">VIEWS GENERATED</span>
     </div>
   </div>
 
@@ -100,208 +117,354 @@
   </div>
 </section>
 
-<!-- MARQUEE 1 -->
+<!-- MARQUEE -->
 <section class="marquee-editorial" aria-hidden="true">
   <div class="marquee-track">
-    <span>Alternate realities</span><span class="dot">◆</span>
-    <span><em>engineered</em> by hand</span><span class="dot">◆</span>
-    <span>a workshop of fiction</span><span class="dot">◆</span>
-    <span>brass · vapour · light</span><span class="dot">◆</span>
-    <span>Alternate realities</span><span class="dot">◆</span>
-    <span><em>engineered</em> by hand</span><span class="dot">◆</span>
-    <span>a workshop of fiction</span><span class="dot">◆</span>
-    <span>brass · vapour · light</span><span class="dot">◆</span>
+    <span>AI short films</span><span class="dot">◆</span>
+    <span><em>UGC</em> creation</span><span class="dot">◆</span>
+    <span>concept art</span><span class="dot">◆</span>
+    <span>content production</span><span class="dot">◆</span>
+    <span>AI short films</span><span class="dot">◆</span>
+    <span><em>UGC</em> creation</span><span class="dot">◆</span>
+    <span>concept art</span><span class="dot">◆</span>
+    <span>content production</span><span class="dot">◆</span>
   </div>
 </section>
 
-<!-- MANIFESTO -->
-<section class="manifesto" id="manifesto" data-testid="manifesto-section">
+<!-- ABOUT -->
+<section class="manifesto" id="about">
   <div class="section-eyebrow reveal">
     <span class="eyebrow-num">§ 01</span>
-    <span class="eyebrow-label">Manifesto</span>
+    <span class="eyebrow-label">Who we are</span>
   </div>
-  <h2 class="section-title reveal" data-testid="manifesto-title">
-    We are not <em>content creators.</em><br/>We are <em>fiction engineers.</em>
+  <h2 class="section-title reveal">
+    An AI studio redefining <em>what's possible.</em>
+  </h2>
+
+  <div class="about-body reveal">
+    <p>Alternatefact Studios is a next-generation creative production house that harnesses the power of advanced AI to create breathtaking short films, authentic user-generated content, striking concept art, and high-performing social content.</p>
+    <p>We believe AI isn't just a tool — it's a new creative medium. Our team of directors, storytellers, and technologists blend cinematic craft with cutting-edge generative models to deliver work that feels both futuristic and deeply human.</p>
+    <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener" class="inline-link">Follow us on Instagram ↗</a>
+  </div>
+
+  <div class="chapters about-facts">
+    <article class="chapter reveal">
+      <div class="chapter-head">
+        <span class="chapter-idx">EST.</span>
+        <h3>2024</h3>
+      </div>
+      <p>Founded as a workshop for AI-native storytelling — and still run like one.</p>
+    </article>
+    <article class="chapter reveal">
+      <div class="chapter-head">
+        <span class="chapter-idx">TEAM</span>
+        <h3>Global</h3>
+      </div>
+      <p>A remote-first bench of directors, storytellers and technologists.</p>
+    </article>
+    <article class="chapter reveal">
+      <div class="chapter-head">
+        <span class="chapter-idx">PIPELINE</span>
+        <h3>AI-first</h3>
+      </div>
+      <p>Generative models supervised by human craft, frame by frame.</p>
+    </article>
+    <article class="chapter reveal">
+      <div class="chapter-head">
+        <span class="chapter-idx">RECORD</span>
+        <h3>100%</h3>
+      </div>
+      <p>Client satisfaction across every commission that has left the bench.</p>
+    </article>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="manifesto" id="services">
+  <div class="section-eyebrow reveal">
+    <span class="eyebrow-num">§ 02</span>
+    <span class="eyebrow-label">What we do</span>
+  </div>
+  <h2 class="section-title reveal">
+    Four pillars. <em>One vision.</em>
   </h2>
 
   <div class="chapters">
-    <article class="chapter reveal" data-testid="chapter-01">
+    <article class="chapter reveal">
       <div class="chapter-head">
         <span class="chapter-idx">01</span>
-        <h3>Ignition</h3>
+        <h3>AI Short Films</h3>
       </div>
-      <p>Every project begins with a spark — a thought that refuses to sit still. We stoke it until it becomes pressure, and pressure until it becomes motion. Nothing leaves the workshop cold.</p>
+      <p>Narrative-driven short films crafted with state-of-the-art generative video models. Cinematic storytelling without limits.</p>
+      <a href="#portfolio" class="chapter-link">View examples ↗</a>
     </article>
-    <article class="chapter reveal" data-testid="chapter-02">
+    <article class="chapter reveal">
       <div class="chapter-head">
         <span class="chapter-idx">02</span>
-        <h3>Movement</h3>
+        <h3>UGC Creation</h3>
       </div>
-      <p>Story is a mechanism. Characters are gears, tensions are springs, scenes are the escapement. We tune each part until the whole ticks in the audience's chest.</p>
+      <p>Authentic, relatable user-generated style videos at scale. Real engagement without the production headache.</p>
+      <a href="#portfolio" class="chapter-link">View examples ↗</a>
     </article>
-    <article class="chapter reveal" data-testid="chapter-03">
+    <article class="chapter reveal">
       <div class="chapter-head">
         <span class="chapter-idx">03</span>
-        <h3>Vapour</h3>
+        <h3>Concept Art &amp; Visuals</h3>
       </div>
-      <p>What remains is atmosphere. The steam a good film leaves in the room after it ends. We chase it obsessively — because that is the part people carry home.</p>
+      <p>Surreal, futuristic, emotionally resonant artwork and visual campaigns for brands, exhibitions and digital experiences.</p>
+      <a href="#portfolio" class="chapter-link">View examples ↗</a>
     </article>
-    <article class="chapter reveal" data-testid="chapter-04">
+    <article class="chapter reveal">
       <div class="chapter-head">
         <span class="chapter-idx">04</span>
-        <h3>Signature</h3>
+        <h3>Content Production</h3>
       </div>
-      <p>Then we sign the plate. Every piece leaves our workshop with a small, deliberate imperfection — a fingerprint. Machines that feel human. Fiction that feels true.</p>
+      <p>End-to-end social content systems — Reels, TikToks, campaigns. From concept to final cut, optimized for virality.</p>
+      <a href="#portfolio" class="chapter-link">View examples ↗</a>
     </article>
   </div>
 </section>
 
-<!-- WORK -->
-<section class="work" id="work" data-testid="work-section">
+<!-- WORK / PORTFOLIO -->
+<section class="work" id="portfolio">
   <div class="section-eyebrow reveal">
-    <span class="eyebrow-num">§ 02</span>
-    <span class="eyebrow-label">Recent Movements</span>
+    <span class="eyebrow-num">§ 03</span>
+    <span class="eyebrow-label">Selected work</span>
   </div>
-  <h2 class="section-title reveal">Selected <em>work</em>, <br/>fresh off the bench.</h2>
+  <h2 class="section-title reveal">Fresh off <em>the bench.</em></h2>
 
-  <div class="work-grid">
+  <div class="filters reveal" id="portfolio-filters">
+    <button data-filter="all" class="filter-pill active">All work</button>
+    <button data-filter="short-film" class="filter-pill">Short films</button>
+    <button data-filter="art" class="filter-pill">Concept art</button>
+    <button data-filter="campaign" class="filter-pill">Campaigns</button>
+  </div>
 
-    <a href="#" class="work-card work-card--tall reveal" data-testid="work-awakening">
+  <div class="work-grid" id="portfolio-grid">
+
+    <a href="#" class="work-card work-card--tall" data-category="short-film" data-project="0">
       <div class="work-frame">
-        <img src="./assets/awakening.jpg" alt="The Awakening" loading="lazy" />
+        <img src="./assets/awakening.jpg" alt="The Awakening — AI short film poster" loading="lazy" />
         <div class="work-spotlight"></div>
       </div>
       <div class="work-meta">
         <span class="work-num">№ 01</span>
         <div class="work-info">
           <h3>The Awakening</h3>
-          <p>AI short film · 3:42 · 2025</p>
+          <p>AI short film · A film by Olukayode · 2025</p>
         </div>
         <span class="work-arrow" aria-hidden="true">↗</span>
       </div>
     </a>
 
-    <a href="#" class="work-card reveal" data-testid="work-onechoice">
+    <a href="#" class="work-card" data-category="campaign" data-project="3">
       <div class="work-frame">
-        <img src="./assets/one-choice.jpg" alt="One Choice" loading="lazy" />
+        <img src="./assets/one-choice.jpg" alt="One Choice — public awareness campaign poster" loading="lazy" />
         <div class="work-spotlight"></div>
       </div>
       <div class="work-meta">
         <span class="work-num">№ 02</span>
         <div class="work-info">
           <h3>One Choice</h3>
-          <p>Branded narrative · 60s · 2025</p>
+          <p>Public awareness campaign · 2025</p>
         </div>
         <span class="work-arrow" aria-hidden="true">↗</span>
       </div>
     </a>
 
-    <a href="#" class="work-card reveal" data-testid="work-beyondlagos">
+    <a href="#" class="work-card" data-category="short-film" data-project="1">
       <div class="work-frame">
-        <img src="./assets/beyond-lagos.jpg" alt="Beyond Lagos" loading="lazy" />
+        <img src="./assets/beyond-lagos.jpg" alt="Beyond Lagos — AI short film poster" loading="lazy" />
         <div class="work-spotlight"></div>
       </div>
       <div class="work-meta">
         <span class="work-num">№ 03</span>
         <div class="work-info">
           <h3>Beyond Lagos</h3>
-          <p>Speculative documentary · 2024</p>
+          <p>AI short film · African Futures · 2025</p>
         </div>
         <span class="work-arrow" aria-hidden="true">↗</span>
       </div>
     </a>
 
-    <a href="#" class="work-card work-card--wide reveal" data-testid="work-conceptart">
+    <a href="#" class="work-card work-card--wide" data-category="art" data-project="2">
       <div class="work-frame">
-        <img src="./assets/concept-art.jpg" alt="Concept Art Series" loading="lazy" />
+        <img src="./assets/concept-art.jpg" alt="Adorned — AI concept art" loading="lazy" />
         <div class="work-spotlight"></div>
       </div>
       <div class="work-meta">
         <span class="work-num">№ 04</span>
         <div class="work-info">
-          <h3>Concept Art Series</h3>
-          <p>Illustration · Ongoing · 24 plates</p>
+          <h3>Adorned</h3>
+          <p>Concept series · Ongoing · 2025</p>
         </div>
         <span class="work-arrow" aria-hidden="true">↗</span>
       </div>
     </a>
 
   </div>
+
+  <p class="work-more reveal">
+    <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener" class="inline-link">See more work on Instagram ↗</a>
+  </p>
 </section>
 
-<!-- APPROACH -->
-<section class="approach" id="approach" data-testid="approach-section">
+<!-- PROCESS -->
+<section class="approach" id="process">
   <div class="section-eyebrow reveal">
-    <span class="eyebrow-num">§ 03</span>
-    <span class="eyebrow-label">The Workshop</span>
+    <span class="eyebrow-num">§ 04</span>
+    <span class="eyebrow-label">How we work</span>
   </div>
   <h2 class="section-title reveal">
-    How the <em>machine</em> runs.
+    From idea to impact. <em>Seamlessly.</em>
   </h2>
 
   <ol class="approach-list">
-    <li class="approach-item reveal" data-testid="approach-01">
+    <li class="approach-item reveal">
       <span class="approach-num">01 —</span>
       <div>
-        <h3>Blueprint</h3>
-        <p>Story architecture, world logic, tonal calibration. Nothing is built without a drawing on the wall.</p>
+        <h3>Discovery Call</h3>
+        <p>We dive deep into your vision, brand, audience, and goals. No fluff — just clarity.</p>
       </div>
     </li>
-    <li class="approach-item reveal" data-testid="approach-02">
+    <li class="approach-item reveal">
       <span class="approach-num">02 —</span>
       <div>
-        <h3>Cast the parts</h3>
-        <p>Characters, environments, textures. AI is the alloy; direction is the mould. We supervise every casting.</p>
+        <h3>Creative Direction</h3>
+        <p>Concepts, mood boards, scripts, and AI production pipelines tailored to you.</p>
       </div>
     </li>
-    <li class="approach-item reveal" data-testid="approach-03">
+    <li class="approach-item reveal">
       <span class="approach-num">03 —</span>
       <div>
-        <h3>Assemble</h3>
-        <p>Sequence, sound, colour, grain. Motion is fitted piece by piece until the piece breathes on its own.</p>
+        <h3>AI Production</h3>
+        <p>Rapid iteration with our proprietary AI toolkit. We generate, refine, and perfect every frame.</p>
       </div>
     </li>
-    <li class="approach-item reveal" data-testid="approach-04">
+    <li class="approach-item reveal">
       <span class="approach-num">04 —</span>
       <div>
-        <h3>Stamp &amp; ship</h3>
-        <p>Final polish, delivery in every format the platform demands. Signed, dated, released into the world.</p>
+        <h3>Delivery &amp; Optimization</h3>
+        <p>Final delivery in all formats + performance insights. We stay partners for ongoing success.</p>
       </div>
     </li>
   </ol>
 </section>
 
+<!-- TESTIMONIALS -->
+<section class="manifesto" id="partners">
+  <div class="section-eyebrow reveal">
+    <span class="eyebrow-num">§ 05</span>
+    <span class="eyebrow-label">Loved by creators &amp; brands</span>
+  </div>
+  <h2 class="section-title reveal">
+    What our <em>partners</em> say.
+  </h2>
+
+  <div class="quotes">
+    <figure class="quote-card reveal">
+      <blockquote class="quote-text">"Alternatefact turned our vague brief into the most beautiful 90-second film we've ever released. The response has been insane."</blockquote>
+      <figcaption class="quote-who">
+        <span class="quote-name">ELENA VOSS</span>
+        <span class="quote-role">Creative Director, Vesper</span>
+      </figcaption>
+    </figure>
+    <figure class="quote-card reveal">
+      <blockquote class="quote-text">"The UGC they delivered looked and felt 100% authentic. Our engagement tripled. Like having a full creative + tech team in one."</blockquote>
+      <figcaption class="quote-who">
+        <span class="quote-name">MARCUS HALE</span>
+        <span class="quote-role">Founder, Lumina</span>
+      </figcaption>
+    </figure>
+    <figure class="quote-card reveal">
+      <blockquote class="quote-text">"They took our brand story and turned it into something visually stunning and emotionally powerful. The best creative partnership we've had."</blockquote>
+      <figcaption class="quote-who">
+        <span class="quote-name">SOFIA PATEL</span>
+        <span class="quote-role">Head of Brand, Techwear Co.</span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
 <!-- CTA / CONTACT -->
-<section class="cta" id="contact" data-testid="contact-section">
+<section class="cta" id="contact">
   <div class="cta-inner">
-    <p class="cta-eyebrow reveal">A/F · WORKSHOP OPEN</p>
-    <h2 class="cta-title reveal" data-testid="cta-title">
+    <p class="cta-eyebrow reveal">A/F · WORKSHOP OPEN · LONDON / GLOBAL</p>
+    <h2 class="cta-title reveal">
       Have a reality<br/>you'd like to <em>build?</em>
     </h2>
-    <a href="mailto:alternatefact2@gmail.com" class="cta-btn reveal" data-testid="cta-email">
+    <a href="mailto:alternatefact2@gmail.com" class="cta-btn reveal">
       alternatefact2@gmail.com
       <span class="cta-btn-arr" aria-hidden="true">↗</span>
     </a>
-    <p class="cta-sub reveal">We reply within one revolution of the flywheel — usually 48 hours.</p>
+    <p class="cta-sub reveal">Tell us about your project below — we reply within one revolution of the flywheel, usually 24 hours.</p>
+
+    <form id="contact-form" class="contact-form reveal">
+      <div class="form-row">
+        <input type="text" name="name" placeholder="Your name" required />
+        <input type="email" name="email" placeholder="Work email" required />
+      </div>
+      <select name="type" required>
+        <option value="">What are you looking for?</option>
+        <option value="short-film">AI Short Film</option>
+        <option value="ugc">UGC Campaign</option>
+        <option value="art">Concept Art / Visuals</option>
+        <option value="content">Ongoing Content Production</option>
+        <option value="other">Something else</option>
+      </select>
+      <textarea name="message" rows="5" placeholder="Tell us about your project, timeline, or vision..." required></textarea>
+      <button type="submit" class="form-submit">Send message</button>
+    </form>
   </div>
 
   <footer class="foot">
     <div class="foot-col">
       <span class="foot-label">© 2026</span>
-      <span class="foot-val">Alternatefact Studios</span>
+      <span class="foot-val">Alternatefact Studios · London / Global</span>
     </div>
     <div class="foot-col">
-      <span class="foot-label">SIGNED</span>
-      <span class="foot-val" id="footSig">A/F — the workshop</span>
+      <span class="foot-label">FOLLOW</span>
+      <span class="foot-val foot-social">
+        <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener">Instagram</a> ·
+        <a href="#">X / Twitter</a> ·
+        <a href="#">LinkedIn</a>
+      </span>
     </div>
     <div class="foot-col foot-col-right">
-      <a href="#top" class="foot-back" data-testid="footer-back-top">
+      <a href="#top" class="foot-back">
         Back to ignition
         <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M11 20V7.83l-5.59 5.59L4 12l8-8 8 8-1.41 1.42L13 7.83V20z"/></svg>
       </a>
     </div>
   </footer>
 </section>
+
+<!-- PROJECT MODAL -->
+<div id="project-modal" class="modal-overlay" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-top">
+      <span class="modal-category" id="modal-category"></span>
+      <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-image" id="modal-image-container"></div>
+    <div class="modal-body">
+      <div class="modal-main">
+        <h3 class="modal-title" id="modal-title"></h3>
+        <p class="modal-subtitle" id="modal-subtitle"></p>
+        <div class="modal-description" id="modal-description"></div>
+      </div>
+      <aside class="modal-details">
+        <div class="modal-details-label">PROJECT DETAILS</div>
+        <dl>
+          <dt>Client / Type</dt><dd id="modal-client"></dd>
+          <dt>Year</dt><dd id="modal-year"></dd>
+          <dt>Role</dt><dd id="modal-role"></dd>
+        </dl>
+        <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener" class="modal-insta">View on Instagram ↗</a>
+      </aside>
+    </div>
+  </div>
+</div>
 
 <!-- Scripts (self-hosted) -->
 <script src="./assets/vendor/gsap.min.js"></script>
