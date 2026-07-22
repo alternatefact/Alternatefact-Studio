@@ -1,1168 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alternatefact Studios • AI Creative Production</title>
-    <meta name="description" content="Alternatefact Studios — AI short films, UGC, concept art and scroll-stopping content. We craft alternate realities.">
-    <link rel="stylesheet" href="assets/tailwind.css">
-    <link rel="stylesheet" href="assets/vendor/fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="assets/fonts.css">
-    <style>
-        :root {
-            --ink: #1c1917;
-            --paper: #faf8f5;
-            --violet: #7c3aed;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Alternatefact Studios — Alternate realities, engineered.</title>
+<meta name="description" content="Alternatefact Studios crafts AI-driven short films, concept art and scroll-stopping content. A workshop of alternate realities, engineered by hand." />
+<meta property="og:title" content="Alternatefact Studios" />
+<meta property="og:description" content="A workshop of alternate realities, engineered by hand." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23b8843c'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23f5f0e6'/%3E%3C/svg%3E" />
 
-        html { scroll-behavior: auto; }
+<!-- Fonts (self-hosted) -->
+<link rel="stylesheet" href="./assets/fonts.css" />
 
-        body {
-            font-family: 'Manrope', system-ui, sans-serif;
-            background: var(--paper);
-            color: var(--ink);
-        }
+<link rel="stylesheet" href="./styles.css" />
 
-        .font-display {
-            font-family: 'Fraunces', Georgia, serif;
-            letter-spacing: -0.02em;
-        }
-        .font-display em {
-            font-style: italic;
-            font-weight: 600;
-        }
-
-        /* ---------- Machine layer (scroll-driven engine) ---------- */
-        #machine-layer {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            overflow: hidden;
-        }
-        .gear-slot { position: absolute; }
-        .gear-slot svg { display: block; width: 100%; height: 100%; }
-        .gear-rotor { will-change: transform; transform-origin: center; }
-
-        /* ---------- Scroll progress ---------- */
-        #scroll-progress {
-            position: fixed;
-            top: 0; left: 0;
-            height: 3px;
-            width: 0%;
-            background: linear-gradient(to right, #7c3aed, #f59e0b);
-            z-index: 60;
-        }
-
-        /* ---------- Reveal on scroll ---------- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(36px);
-            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .reveal.is-visible { opacity: 1; transform: translateY(0); }
-        .reveal-delay-1 { transition-delay: 0.1s; }
-        .reveal-delay-2 { transition-delay: 0.2s; }
-        .reveal-delay-3 { transition-delay: 0.3s; }
-
-        /* ---------- Marquee ---------- */
-        .marquee-track {
-            display: flex;
-            width: max-content;
-            animation: marquee 30s linear infinite;
-        }
-        @keyframes marquee {
-            from { transform: translateX(0); }
-            to   { transform: translateX(-50%); }
-        }
-
-        /* ---------- Hero collage ---------- */
-        .collage-card {
-            position: absolute;
-            border-radius: 1.5rem;
-            overflow: hidden;
-            box-shadow: 0 24px 60px -18px rgba(28, 25, 23, 0.35);
-            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease;
-            will-change: transform;
-        }
-        .collage-card img { display: block; width: 100%; height: 100%; object-fit: cover; }
-        .collage-card:hover { box-shadow: 0 32px 70px -16px rgba(124, 58, 237, 0.35); }
-        .collage-float { will-change: transform; }
-
-        /* ---------- Pinterest-style cards ---------- */
-        .pin-card {
-            break-inside: avoid;
-            border-radius: 1.75rem;
-            overflow: hidden;
-            background: #fff;
-            box-shadow: 0 10px 34px -14px rgba(28, 25, 23, 0.18);
-            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease;
-        }
-        .pin-card:hover {
-            transform: translateY(-6px) rotate(-0.5deg);
-            box-shadow: 0 26px 54px -16px rgba(124, 58, 237, 0.28);
-        }
-        .pin-card img { transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); display: block; width: 100%; }
-        .pin-card:hover img { transform: scale(1.04); }
-
-        .nav-link { position: relative; transition: color 0.2s ease; }
-        .nav-link:after {
-            content: '';
-            position: absolute;
-            width: 0; height: 2px;
-            bottom: -3px; left: 0;
-            background: linear-gradient(to right, #7c3aed, #f59e0b);
-            border-radius: 2px;
-            transition: width 0.3s ease;
-        }
-        .nav-link:hover:after { width: 100%; }
-
-        .soft-card {
-            transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s ease;
-        }
-        .soft-card:hover {
-            transform: translateY(-6px) rotate(0.4deg);
-            box-shadow: 0 24px 48px -18px rgba(28, 25, 23, 0.22);
-        }
-
-        .modal { animation: modalPop 0.3s ease forwards; }
-        @keyframes modalPop {
-            from { opacity: 0; transform: scale(0.96) translateY(16px); }
-            to   { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        .filter-btn { transition: all 0.2s ease; }
-        .filter-btn.active {
-            background-color: var(--ink);
-            color: #fff;
-            border-color: var(--ink);
-        }
-
-        .blob {
-            position: absolute;
-            border-radius: 9999px;
-            filter: blur(80px);
-            opacity: 0.5;
-            pointer-events: none;
-            animation: blob-float 16s ease-in-out infinite alternate;
-        }
-        @keyframes blob-float {
-            from { transform: translate3d(0, 0, 0) scale(1); }
-            to   { transform: translate3d(36px, -44px, 0) scale(1.12); }
-        }
-
-        #modal-description p + p { margin-top: 1em; }
-        #modal-description em { color: #7c3aed; }
-
-        .scroll-hint { animation: hint-bob 2s ease-in-out infinite; }
-        @keyframes hint-bob {
-            0%, 100% { transform: translateY(0); opacity: 0.5; }
-            50% { transform: translateY(8px); opacity: 1; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .marquee-track { animation: none; }
-            .blob { animation: none; }
-            .reveal { transition: none; opacity: 1; transform: none; }
-        }
-    </style>
+<!-- Three.js import map (self-hosted) -->
+<script type="importmap">
+{
+  "imports": {
+    "three": "./assets/vendor/three/three.module.min.js",
+    "three/addons/": "./assets/vendor/three/addons/"
+  }
+}
+</script>
 </head>
-<body class="overflow-x-hidden antialiased">
-    <div id="scroll-progress"></div>
 
-    <!-- Watch-movement background: gear train, mainspring barrel, escapement -->
-    <div id="machine-layer" aria-hidden="true">
-        <!-- top-right gear train under a bridge -->
-        <div class="gear-slot" data-part='{"kind":"wheel","teeth":30,"holes":5,"speed":0.05,"idle":2,"tone":"violet"}'    style="top:-80px;right:-60px;width:330px;height:330px;opacity:0.95;"></div>
-        <div class="gear-slot" data-part='{"kind":"wheel","teeth":16,"holes":3,"speed":-0.094,"idle":-3.75,"tone":"amber"}' style="top:194px;right:214px;width:180px;height:180px;opacity:0.9;"></div>
-        <div class="gear-slot" data-part='{"kind":"bridge"}' style="top:8px;right:96px;width:330px;height:130px;opacity:0.95;transform:rotate(-32deg);"></div>
-        <!-- small seconds wheel, top-left -->
-        <div class="gear-slot" data-part='{"kind":"wheel","teeth":20,"holes":4,"speed":0.075,"idle":2.6,"tone":"violet"}' style="top:96px;left:5%;width:150px;height:150px;opacity:0.9;"></div>
-        <div class="gear-slot" data-part='{"kind":"wheel","teeth":12,"holes":3,"speed":-0.125,"idle":-4.3,"tone":"amber"}' style="top:212px;left:calc(5% + 118px);width:92px;height:92px;opacity:0.85;"></div>
-        <!-- mainspring barrel + intermediate wheel, left -->
-        <div class="gear-slot" data-part='{"kind":"barrel","speed":0.028,"idle":0.7}' style="top:32%;left:-85px;width:280px;height:280px;opacity:0.95;"></div>
-        <div class="gear-slot" data-part='{"kind":"wheel","teeth":14,"holes":3,"speed":-0.062,"idle":-1.55,"tone":"violet"}' style="top:calc(32% + 210px);left:132px;width:150px;height:150px;opacity:0.9;"></div>
-        <!-- escapement: escape wheel + pallet fork + balance wheel with hairspring -->
-        <div class="gear-slot" data-part='{"kind":"escape","teeth":15,"freq":1.5,"speed":0.08}' style="bottom:74px;right:305px;width:175px;height:175px;opacity:0.95;"></div>
-        <div class="gear-slot" data-part='{"kind":"fork","freq":1.5,"amp":10}' style="bottom:212px;right:206px;width:110px;height:176px;opacity:0.95;transform:rotate(146deg);"></div>
-        <div class="gear-slot" data-part='{"kind":"balance","freq":1.5,"amp":32}' style="bottom:-50px;right:-45px;width:310px;height:310px;opacity:0.95;"></div>
-        <!-- extra small wheel, top-center -->
-        <div class="gear-slot" data-part='{"kind":"wheel","teeth":14,"holes":3,"speed":-0.07,"idle":-2.8,"tone":"amber"}' style="top:-36px;left:38%;width:130px;height:130px;opacity:0.85;"></div>
+<body>
+
+<!-- Grain overlay -->
+<div class="grain" aria-hidden="true"></div>
+
+<!-- Scroll progress rail -->
+<div class="rail" aria-hidden="true"><div class="rail-fill" id="railFill"></div></div>
+
+<!-- Fixed 3D machinery canvas (behind content) -->
+<canvas id="machineCanvas" aria-hidden="true"></canvas>
+
+<!-- Chapter marker (fixed) -->
+<div class="chapter-marker" aria-hidden="true">
+  <span class="chapter-label">CHAPTER</span>
+  <span class="chapter-num" id="chapterNum">01</span>
+  <span class="chapter-title" id="chapterTitle">Ignition</span>
+</div>
+
+<!-- Nav -->
+<nav class="nav" data-testid="site-nav">
+  <a href="#top" class="nav-brand" data-testid="nav-brand">
+    <span class="brand-mark">A/F</span>
+    <span class="brand-word">Alternatefact <em>Studios</em></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#work" data-testid="nav-work">Work</a></li>
+    <li><a href="#manifesto" data-testid="nav-manifesto">Manifesto</a></li>
+    <li><a href="#approach" data-testid="nav-approach">Approach</a></li>
+    <li><a href="#contact" class="nav-cta" data-testid="nav-contact">Commission <span aria-hidden="true">↗</span></a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="top" data-testid="hero-section">
+  <div class="hero-meta">
+    <div class="meta-block">
+      <span class="meta-label">EST.</span>
+      <span class="meta-val">MMXXIV</span>
     </div>
-
-    <!-- NAVBAR -->
-    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b border-transparent">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex items-center justify-between h-20">
-                <a href="#top" class="flex items-center gap-x-3">
-                    <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-600 to-amber-400 flex items-center justify-center shadow-lg shadow-violet-600/25">
-                        <span class="text-white font-extrabold text-lg tracking-tight">AF</span>
-                    </div>
-                    <div>
-                        <div class="font-extrabold text-lg tracking-tight">ALTERNATEFACT</div>
-                        <div class="text-[10px] text-stone-500 -mt-1 tracking-[4px]">STUDIOS</div>
-                    </div>
-                </a>
-
-                <div class="hidden md:flex items-center gap-x-9 text-sm font-semibold text-stone-600">
-                    <a href="#about" class="nav-link hover:text-stone-900">About</a>
-                    <a href="#services" class="nav-link hover:text-stone-900">Services</a>
-                    <a href="#portfolio" class="nav-link hover:text-stone-900">Portfolio</a>
-                    <a href="#process" class="nav-link hover:text-stone-900">Process</a>
-                    <a href="#contact" class="nav-link hover:text-stone-900">Contact</a>
-                </div>
-
-                <div class="flex items-center gap-x-3">
-                    <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener"
-                       class="flex items-center justify-center w-10 h-10 rounded-2xl bg-white border border-stone-200 hover:border-violet-400 hover:text-violet-600 transition-colors shadow-sm">
-                        <i class="fab fa-instagram text-xl"></i>
-                    </a>
-                    <a href="#contact"
-                       class="hidden md:block px-6 py-3 text-sm font-bold bg-stone-900 text-white rounded-full hover:bg-violet-700 transition-all active:scale-[0.98]">
-                        Start a Project
-                    </a>
-                    <button id="mobile-menu-btn"
-                            class="md:hidden w-10 h-10 flex items-center justify-center text-stone-700">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-stone-200 bg-[#faf8f5]/95 backdrop-blur-xl">
-            <div class="px-6 py-6 flex flex-col gap-y-4 text-lg font-semibold text-stone-700">
-                <a href="#about" class="py-1">About</a>
-                <a href="#services" class="py-1">Services</a>
-                <a href="#portfolio" class="py-1">Portfolio</a>
-                <a href="#process" class="py-1">Process</a>
-                <a href="#contact" class="py-1">Contact</a>
-                <a href="#contact" class="mt-2 px-6 py-3.5 text-center font-bold bg-stone-900 text-white rounded-full">Start a Project</a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- HERO -->
-    <header class="relative min-h-screen flex items-center pt-28 pb-16 overflow-hidden">
-        <div class="blob w-96 h-96 bg-violet-200 -left-24 top-16"></div>
-        <div class="blob w-80 h-80 bg-amber-100 right-10 bottom-10" style="animation-delay:-8s;"></div>
-
-        <div class="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-14 items-center relative z-10">
-            <div>
-                <div class="inline-flex items-center gap-x-2 px-4 py-2 rounded-full bg-white border border-stone-200 shadow-sm mb-8 reveal is-visible">
-                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                    <span class="text-xs font-bold tracking-[2px] text-stone-500">AI-POWERED CREATIVE STUDIO • FRANKFURT / GLOBAL</span>
-                </div>
-
-                <h1 class="font-display text-6xl md:text-7xl xl:text-8xl leading-[1.02] mb-7">
-                    We craft<br><em class="text-violet-700">alternate</em> realities.
-                </h1>
-
-                <p class="max-w-md text-lg md:text-xl text-stone-600 leading-relaxed mb-9">
-                    AI short films, UGC, concept art &amp; scroll-stopping content —
-                    engineered frame by frame in our studio.
-                </p>
-
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="#portfolio"
-                       class="group px-9 py-4 bg-stone-900 text-white font-bold rounded-full flex items-center justify-center gap-x-3 hover:bg-violet-700 transition-all text-lg active:scale-[0.98]">
-                        Explore Our Work
-                        <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i>
-                    </a>
-                    <a href="#contact"
-                       class="px-9 py-4 bg-white border border-stone-300 hover:border-violet-500 hover:text-violet-700 font-bold rounded-full flex items-center justify-center transition-all text-lg">
-                        Start a Project
-                    </a>
-                </div>
-
-                <div class="mt-12 flex gap-x-10">
-                    <div>
-                        <div class="font-display text-4xl font-semibold counter" data-target="120" data-suffix="+">0</div>
-                        <div class="text-stone-500 text-xs font-bold tracking-[2px] mt-1">PROJECTS</div>
-                    </div>
-                    <div>
-                        <div class="font-display text-4xl font-semibold counter" data-target="40" data-suffix="+">0</div>
-                        <div class="text-stone-500 text-xs font-bold tracking-[2px] mt-1">BRANDS</div>
-                    </div>
-                    <div>
-                        <div class="font-display text-4xl font-semibold counter" data-target="15" data-suffix="M+">0</div>
-                        <div class="text-stone-500 text-xs font-bold tracking-[2px] mt-1">VIEWS</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Collage of real work, Pinterest-board style -->
-            <div class="relative h-[420px] sm:h-[520px] lg:h-[600px]">
-                <div class="collage-float absolute inset-0" data-parallax="-0.04">
-                    <div class="collage-card w-[58%] top-0 left-0" style="transform: rotate(-5deg);">
-                        <img src="assets/awakening.jpg" alt="The Awakening — AI short film">
-                    </div>
-                </div>
-                <div class="collage-float absolute inset-0" data-parallax="0.055">
-                    <div class="collage-card w-[38%] top-[8%] right-0" style="transform: rotate(4deg);">
-                        <img src="assets/beyond-lagos.jpg" alt="Beyond Lagos — AI short film">
-                    </div>
-                </div>
-                <div class="collage-float absolute inset-0" data-parallax="0.03">
-                    <div class="collage-card w-[46%] bottom-0 left-[4%]" style="transform: rotate(3deg);">
-                        <img src="assets/concept-art.jpg" alt="Adorned — concept art">
-                    </div>
-                </div>
-                <div class="collage-float absolute inset-0" data-parallax="-0.05">
-                    <div class="collage-card w-[30%] bottom-[6%] right-[10%]" style="transform: rotate(-6deg);">
-                        <img src="assets/one-choice.jpg" alt="One Choice — campaign art">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-y-1 text-[10px] font-bold tracking-[3px] text-stone-400 scroll-hint">
-            <div>SCROLL</div>
-            <i class="fas fa-chevron-down text-lg"></i>
-        </div>
-    </header>
-
-    <!-- MARQUEE STRIP -->
-    <div class="relative z-10 border-y border-stone-200 bg-white/70 backdrop-blur py-5 overflow-hidden">
-        <div class="marquee-track font-display text-xl md:text-2xl font-medium text-stone-400">
-            <div class="flex items-center gap-x-8 pr-8">
-                <span>AI Short Films</span><span class="text-violet-500">✦</span>
-                <span>UGC Creation</span><span class="text-amber-500">✦</span>
-                <span>Concept Art</span><span class="text-violet-500">✦</span>
-                <span>Content Production</span><span class="text-amber-500">✦</span>
-                <span><em>Alternatefact Studios</em></span><span class="text-violet-500">✦</span>
-            </div>
-            <div class="flex items-center gap-x-8 pr-8" aria-hidden="true">
-                <span>AI Short Films</span><span class="text-violet-500">✦</span>
-                <span>UGC Creation</span><span class="text-amber-500">✦</span>
-                <span>Concept Art</span><span class="text-violet-500">✦</span>
-                <span>Content Production</span><span class="text-amber-500">✦</span>
-                <span><em>Alternatefact Studios</em></span><span class="text-violet-500">✦</span>
-            </div>
-        </div>
+    <div class="meta-block">
+      <span class="meta-label">LAT.</span>
+      <span class="meta-val">06°27′N · 03°23′E</span>
     </div>
-
-    <!-- ABOUT -->
-    <section id="about" class="relative z-10 overflow-hidden">
-        <div class="max-w-6xl mx-auto px-6 pt-28 pb-24">
-            <div class="grid md:grid-cols-12 gap-x-14 items-center">
-                <div class="md:col-span-7">
-                    <div class="uppercase tracking-[3px] text-violet-600 text-sm font-extrabold mb-4 reveal">WHO WE ARE</div>
-                    <h2 class="font-display text-5xl md:text-6xl xl:text-7xl leading-[1.04] mb-8 reveal reveal-delay-1">
-                        An AI studio<br>redefining <em>what's possible.</em>
-                    </h2>
-
-                    <div class="max-w-xl text-lg md:text-xl text-stone-600 leading-relaxed space-y-6 reveal reveal-delay-2">
-                        <p>Alternatefact Studios is a next-generation creative production house that harnesses the power of advanced AI to create breathtaking short films, authentic user-generated content, striking concept art, and high-performing social content.</p>
-                        <p>We believe AI isn't just a tool — it's a new creative medium. Our team of directors, storytellers, and technologists blend cinematic craft with cutting-edge generative models to deliver work that feels both futuristic and deeply human.</p>
-                    </div>
-
-                    <div class="mt-8 reveal reveal-delay-3">
-                        <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener"
-                           class="inline-flex items-center gap-x-2 text-violet-700 hover:text-violet-500 font-bold">
-                            <i class="fab fa-instagram"></i>
-                            <span>Follow us on Instagram</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="md:col-span-5 mt-12 md:mt-0 reveal reveal-delay-2">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="soft-card bg-violet-50 rounded-[1.75rem] p-7 rotate-[-1deg]">
-                            <div class="font-display text-4xl font-semibold">2024</div>
-                            <div class="text-stone-500 mt-1 font-semibold">Founded</div>
-                        </div>
-                        <div class="soft-card bg-amber-50 rounded-[1.75rem] p-7 rotate-[1.5deg] mt-6">
-                            <div class="font-display text-4xl font-semibold">Global</div>
-                            <div class="text-stone-500 mt-1 font-semibold">Remote-first team</div>
-                        </div>
-                        <div class="soft-card bg-rose-50 rounded-[1.75rem] p-7 rotate-[1deg]">
-                            <div class="font-display text-4xl font-semibold">AI-first</div>
-                            <div class="text-stone-500 mt-1 font-semibold">Production pipeline</div>
-                        </div>
-                        <div class="soft-card bg-sky-50 rounded-[1.75rem] p-7 rotate-[-1.5deg] mt-6">
-                            <div class="font-display text-4xl font-semibold">100%</div>
-                            <div class="text-stone-500 mt-1 font-semibold">Client satisfaction</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SERVICES -->
-    <section id="services" class="relative z-10 py-24 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <div class="uppercase tracking-[3px] text-violet-600 text-sm font-extrabold mb-4 reveal">WHAT WE DO</div>
-                <h2 class="font-display text-5xl md:text-6xl leading-tight reveal reveal-delay-1">Four pillars. <em>One vision.</em></h2>
-            </div>
-
-            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
-                <div class="soft-card bg-violet-50 rounded-[2rem] p-8 rotate-[-0.6deg] reveal">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-white text-violet-600 shadow-sm mb-7">
-                        <i class="fas fa-film text-2xl"></i>
-                    </div>
-                    <h3 class="font-display font-semibold text-2xl md:text-3xl mb-3">AI Short Films</h3>
-                    <p class="text-stone-600 leading-relaxed">Narrative-driven short films crafted with state-of-the-art generative video models. Cinematic storytelling without limits.</p>
-                    <a href="#portfolio" class="mt-7 inline-flex items-center gap-x-2 text-sm font-bold text-violet-700">
-                        View examples <i class="fas fa-arrow-right text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="soft-card bg-amber-50 rounded-[2rem] p-8 rotate-[0.8deg] lg:mt-10 reveal reveal-delay-1">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-white text-amber-500 shadow-sm mb-7">
-                        <i class="fas fa-video text-2xl"></i>
-                    </div>
-                    <h3 class="font-display font-semibold text-2xl md:text-3xl mb-3">UGC Creation</h3>
-                    <p class="text-stone-600 leading-relaxed">Authentic, relatable user-generated style videos at scale. Real engagement without the production headache.</p>
-                    <a href="#portfolio" class="mt-7 inline-flex items-center gap-x-2 text-sm font-bold text-amber-600">
-                        View examples <i class="fas fa-arrow-right text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="soft-card bg-rose-50 rounded-[2rem] p-8 rotate-[-0.8deg] reveal reveal-delay-2">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-white text-rose-500 shadow-sm mb-7">
-                        <i class="fas fa-palette text-2xl"></i>
-                    </div>
-                    <h3 class="font-display font-semibold text-2xl md:text-3xl mb-3">Concept Art &amp; Visuals</h3>
-                    <p class="text-stone-600 leading-relaxed">Surreal, futuristic, emotionally resonant artwork and visual campaigns for brands, exhibitions and digital experiences.</p>
-                    <a href="#portfolio" class="mt-7 inline-flex items-center gap-x-2 text-sm font-bold text-rose-600">
-                        View examples <i class="fas fa-arrow-right text-xs"></i>
-                    </a>
-                </div>
-
-                <div class="soft-card bg-sky-50 rounded-[2rem] p-8 rotate-[0.6deg] lg:mt-10 reveal reveal-delay-3">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-white text-sky-500 shadow-sm mb-7">
-                        <i class="fas fa-bullhorn text-2xl"></i>
-                    </div>
-                    <h3 class="font-display font-semibold text-2xl md:text-3xl mb-3">Content Production</h3>
-                    <p class="text-stone-600 leading-relaxed">End-to-end social content systems — Reels, TikToks, campaigns. From concept to final cut, optimized for virality.</p>
-                    <a href="#portfolio" class="mt-7 inline-flex items-center gap-x-2 text-sm font-bold text-sky-600">
-                        View examples <i class="fas fa-arrow-right text-xs"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- PORTFOLIO (Pinterest-style masonry) -->
-    <section id="portfolio" class="relative z-10 py-24 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-y-5">
-                <div>
-                    <div class="uppercase tracking-[3px] text-violet-600 text-sm font-extrabold mb-4 reveal">SELECTED WORK</div>
-                    <h2 class="font-display text-5xl md:text-6xl reveal reveal-delay-1"><em>Portfolio</em></h2>
-                </div>
-
-                <div class="flex flex-wrap gap-2 reveal reveal-delay-2" id="portfolio-filters">
-                    <button data-filter="all" class="filter-btn active px-6 py-2.5 text-sm font-bold border border-stone-300 rounded-full bg-white">All Work</button>
-                    <button data-filter="short-film" class="filter-btn px-5 py-2.5 text-sm font-bold border border-stone-300 rounded-full bg-white hover:border-stone-900">Short Films</button>
-                    <button data-filter="art" class="filter-btn px-5 py-2.5 text-sm font-bold border border-stone-300 rounded-full bg-white hover:border-stone-900">Concept Art</button>
-                    <button data-filter="campaign" class="filter-btn px-5 py-2.5 text-sm font-bold border border-stone-300 rounded-full bg-white hover:border-stone-900">Campaigns</button>
-                </div>
-            </div>
-
-            <div class="columns-1 sm:columns-2 lg:columns-3 gap-6" id="portfolio-grid">
-
-                <div class="pin-card mb-6 reveal" data-category="short-film">
-                    <div class="overflow-hidden">
-                        <img src="assets/beyond-lagos.jpg" alt="Beyond Lagos — AI short film poster">
-                    </div>
-                    <div class="p-6">
-                        <span class="inline-block px-3 py-1 text-[11px] font-extrabold tracking-wider bg-violet-100 text-violet-700 rounded-full mb-3">SHORT FILM</span>
-                        <h4 class="font-display font-semibold text-2xl mb-1">Beyond Lagos</h4>
-                        <p class="text-stone-500 text-sm mb-3 font-semibold">A film by Olukayode • African Futures</p>
-                        <p class="text-stone-600">Some dreams don't end at the horizon. An Afro-futurist space epic taking African stories beyond the stars.</p>
-                        <button onclick="showProjectModal(1)"
-                                class="mt-4 inline-flex items-center gap-x-2 text-sm font-bold text-violet-700 hover:text-violet-500">
-                            View Project <i class="fas fa-arrow-right text-xs"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="pin-card mb-6 reveal reveal-delay-1" data-category="short-film">
-                    <div class="overflow-hidden">
-                        <img src="assets/awakening.jpg" alt="The Awakening — AI short film poster">
-                    </div>
-                    <div class="p-6">
-                        <span class="inline-block px-3 py-1 text-[11px] font-extrabold tracking-wider bg-amber-100 text-amber-700 rounded-full mb-3">SHORT FILM</span>
-                        <h4 class="font-display font-semibold text-2xl mb-1">The Awakening</h4>
-                        <p class="text-stone-500 text-sm mb-3 font-semibold">A film by Olukayode • Alternatefact Studios</p>
-                        <p class="text-stone-600">Some powers were never meant to sleep. The past never dies — it waits. A cinematic AI creature feature.</p>
-                        <button onclick="showProjectModal(0)"
-                                class="mt-4 inline-flex items-center gap-x-2 text-sm font-bold text-violet-700 hover:text-violet-500">
-                            View Project <i class="fas fa-arrow-right text-xs"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="pin-card mb-6 reveal reveal-delay-2" data-category="campaign">
-                    <div class="overflow-hidden">
-                        <img src="assets/one-choice.jpg" alt="One Choice — public awareness campaign poster">
-                    </div>
-                    <div class="p-6">
-                        <span class="inline-block px-3 py-1 text-[11px] font-extrabold tracking-wider bg-rose-100 text-rose-700 rounded-full mb-3">CAMPAIGN</span>
-                        <h4 class="font-display font-semibold text-2xl mb-1">One Choice</h4>
-                        <p class="text-stone-500 text-sm mb-3 font-semibold">Public Awareness Campaign</p>
-                        <p class="text-stone-600">One choice can change everything. Purpose-driven campaign art that stops the scroll and carries a message.</p>
-                        <button onclick="showProjectModal(3)"
-                                class="mt-4 inline-flex items-center gap-x-2 text-sm font-bold text-violet-700 hover:text-violet-500">
-                            View Project <i class="fas fa-arrow-right text-xs"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="pin-card mb-6 reveal" data-category="art">
-                    <div class="overflow-hidden">
-                        <img src="assets/concept-art.jpg" alt="Adorned — AI concept art character">
-                    </div>
-                    <div class="p-6">
-                        <span class="inline-block px-3 py-1 text-[11px] font-extrabold tracking-wider bg-sky-100 text-sky-700 rounded-full mb-3">CONCEPT ART</span>
-                        <h4 class="font-display font-semibold text-2xl mb-1">Adorned</h4>
-                        <p class="text-stone-500 text-sm mb-3 font-semibold">Concept Series • 2025</p>
-                        <p class="text-stone-600">Character and world design with couture-level detail — impossible materials rendered with real emotion.</p>
-                        <button onclick="showProjectModal(2)"
-                                class="mt-4 inline-flex items-center gap-x-2 text-sm font-bold text-violet-700 hover:text-violet-500">
-                            View Project <i class="fas fa-arrow-right text-xs"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-center mt-10 reveal">
-                <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener"
-                   class="inline-flex items-center gap-x-3 text-violet-700 hover:text-violet-500 font-bold">
-                    See more work on Instagram <i class="fab fa-instagram ml-1"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- PROCESS -->
-    <section id="process" class="relative z-10 py-24 overflow-hidden">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <div class="uppercase tracking-[3px] text-violet-600 text-sm font-extrabold mb-4 reveal">HOW WE WORK</div>
-                <h2 class="font-display text-5xl md:text-6xl leading-tight reveal reveal-delay-1">From idea to impact.<br><em>Seamlessly.</em></h2>
-            </div>
-
-            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
-                <div class="soft-card bg-white border border-stone-200 rounded-[2rem] p-8 rotate-[-0.5deg] reveal">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-full bg-violet-100 text-violet-700 mb-6 font-display text-2xl font-semibold">1</div>
-                    <h4 class="font-display font-semibold text-2xl mb-3">Discovery Call</h4>
-                    <p class="text-stone-600">We dive deep into your vision, brand, audience, and goals. No fluff — just clarity.</p>
-                </div>
-                <div class="soft-card bg-white border border-stone-200 rounded-[2rem] p-8 rotate-[0.6deg] lg:mt-8 reveal reveal-delay-1">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-full bg-amber-100 text-amber-600 mb-6 font-display text-2xl font-semibold">2</div>
-                    <h4 class="font-display font-semibold text-2xl mb-3">Creative Direction</h4>
-                    <p class="text-stone-600">Concepts, mood boards, scripts, and AI production pipelines tailored to you.</p>
-                </div>
-                <div class="soft-card bg-white border border-stone-200 rounded-[2rem] p-8 rotate-[-0.6deg] reveal reveal-delay-2">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-full bg-rose-100 text-rose-600 mb-6 font-display text-2xl font-semibold">3</div>
-                    <h4 class="font-display font-semibold text-2xl mb-3">AI Production</h4>
-                    <p class="text-stone-600">Rapid iteration with our proprietary AI toolkit. We generate, refine, and perfect every frame.</p>
-                </div>
-                <div class="soft-card bg-white border border-stone-200 rounded-[2rem] p-8 rotate-[0.5deg] lg:mt-8 reveal reveal-delay-3">
-                    <div class="w-14 h-14 flex items-center justify-center rounded-full bg-sky-100 text-sky-600 mb-6 font-display text-2xl font-semibold">4</div>
-                    <h4 class="font-display font-semibold text-2xl mb-3">Delivery &amp; Optimization</h4>
-                    <p class="text-stone-600">Final delivery in all formats + performance insights. We stay partners for ongoing success.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- TESTIMONIALS -->
-    <section class="relative z-10 py-24 overflow-hidden">
-        <div class="blob w-96 h-96 bg-violet-100 right-0 top-10"></div>
-        <div class="max-w-6xl mx-auto px-6 relative">
-            <div class="text-center mb-14">
-                <div class="uppercase tracking-[3px] text-violet-600 text-sm font-extrabold mb-4 reveal">LOVED BY CREATORS &amp; BRANDS</div>
-                <h2 class="font-display text-4xl md:text-5xl reveal reveal-delay-1">What our <em>partners</em> say</h2>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6 items-start">
-                <div class="soft-card bg-white border border-stone-200 rounded-[2rem] p-8 rotate-[-0.6deg] reveal">
-                    <div class="flex gap-x-1 text-amber-400 mb-4">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
-                    </div>
-                    <p class="font-display italic text-lg text-stone-700">"Alternatefact turned our vague brief into the most beautiful 90-second film we've ever released. The response has been insane."</p>
-                    <div class="mt-6 flex items-center gap-x-3">
-                        <div class="w-10 h-10 bg-gradient-to-br from-violet-300 to-amber-200 rounded-full"></div>
-                        <div>
-                            <div class="font-bold">Elena Voss</div>
-                            <div class="text-sm text-stone-500">Creative Director, Vesper</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="soft-card bg-white border border-stone-200 rounded-[2rem] p-8 rotate-[0.5deg] md:mt-8 reveal reveal-delay-1">
-                    <div class="flex gap-x-1 text-amber-400 mb-4">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <p class="font-display italic text-lg text-stone-700">"The UGC they delivered looked and felt 100% authentic. Our engagement tripled. Like having a full creative + tech team in one."</p>
-                    <div class="mt-6 flex items-center gap-x-3">
-                        <div class="w-10 h-10 bg-gradient-to-br from-amber-200 to-rose-200 rounded-full"></div>
-                        <div>
-                            <div class="font-bold">Marcus Hale</div>
-                            <div class="text-sm text-stone-500">Founder, Lumina</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="soft-card bg-white border border-stone-200 rounded-[2rem] p-8 rotate-[-0.4deg] reveal reveal-delay-2">
-                    <div class="flex gap-x-1 text-amber-400 mb-4">
-                        <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                    </div>
-                    <p class="font-display italic text-lg text-stone-700">"They took our brand story and turned it into something visually stunning and emotionally powerful. The best creative partnership we've had."</p>
-                    <div class="mt-6 flex items-center gap-x-3">
-                        <div class="w-10 h-10 bg-gradient-to-br from-sky-200 to-violet-300 rounded-full"></div>
-                        <div>
-                            <div class="font-bold">Sofia Patel</div>
-                            <div class="text-sm text-stone-500">Head of Brand, Techwear Co.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact" class="relative z-10 py-24 overflow-hidden">
-        <div class="max-w-3xl mx-auto px-6">
-            <div class="bg-white border border-stone-200 rounded-[2.5rem] shadow-xl shadow-stone-200/60 p-10 md:p-14 text-center relative overflow-hidden">
-                <div class="blob w-72 h-72 bg-violet-100 -right-20 -top-20"></div>
-                <div class="relative">
-                    <div class="uppercase tracking-[3px] text-violet-600 text-sm font-extrabold mb-4">LET'S CREATE SOMETHING REMARKABLE</div>
-                    <h2 class="font-display text-4xl md:text-5xl leading-tight mb-4">Ready to build your<br><em>next alternate reality?</em></h2>
-                    <p class="text-lg text-stone-600 max-w-md mx-auto">Tell us about your project. We'll get back within 24 hours with ideas and next steps.</p>
-
-                    <form id="contact-form" class="mt-10 text-left">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <input type="text" placeholder="Your name" required
-                                   class="bg-stone-50 border border-stone-200 focus:border-violet-500 px-6 py-4 rounded-full outline-none font-semibold placeholder:text-stone-400 placeholder:font-medium">
-                            <input type="email" placeholder="Work email" required
-                                   class="bg-stone-50 border border-stone-200 focus:border-violet-500 px-6 py-4 rounded-full outline-none font-semibold placeholder:text-stone-400 placeholder:font-medium">
-                        </div>
-
-                        <div class="mt-4">
-                            <select required class="bg-stone-50 border border-stone-200 focus:border-violet-500 px-6 py-4 rounded-full w-full outline-none font-semibold text-stone-600">
-                                <option value="">What are you looking for?</option>
-                                <option value="short-film">AI Short Film</option>
-                                <option value="ugc">UGC Campaign</option>
-                                <option value="art">Concept Art / Visuals</option>
-                                <option value="content">Ongoing Content Production</option>
-                                <option value="other">Something else</option>
-                            </select>
-                        </div>
-
-                        <textarea placeholder="Tell us about your project, timeline, or vision..." rows="5" required
-                                  class="mt-4 w-full bg-stone-50 border border-stone-200 focus:border-violet-500 px-6 py-4 rounded-[1.5rem] outline-none resize-y font-semibold placeholder:text-stone-400 placeholder:font-medium"></textarea>
-
-                        <button type="submit"
-                                class="mt-6 w-full py-4 bg-stone-900 hover:bg-violet-700 transition font-bold text-white rounded-full text-lg active:scale-[0.99]">
-                            Send Message
-                        </button>
-
-                        <p class="text-xs text-stone-400 mt-4 text-center">Or email us directly at <a href="mailto:alternatefact2@gmail.com" class="underline hover:text-stone-700">alternatefact2@gmail.com</a></p>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="relative z-10 border-t border-stone-200 py-12 bg-white/60">
-        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-y-6 text-sm text-stone-500 font-semibold">
-            <div>© 2026 Alternatefact Studios. All alternate realities reserved.</div>
-
-            <div class="flex items-center gap-x-6">
-                <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener" class="hover:text-stone-900 transition">Instagram</a>
-                <a href="#" class="hover:text-stone-900 transition">X / Twitter</a>
-                <a href="#" class="hover:text-stone-900 transition">LinkedIn</a>
-            </div>
-
-            <div>Frankfurt • Global</div>
-        </div>
-    </footer>
-
-    <!-- PROJECT MODAL -->
-    <div id="project-modal" onclick="if (event.target.id === 'project-modal') hideProjectModal()"
-         class="hidden fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-6">
-        <div onclick="event.stopImmediatePropagation()"
-             class="modal bg-white max-w-4xl w-full rounded-[2rem] overflow-hidden border border-stone-200 max-h-[90vh] overflow-y-auto">
-
-            <div class="flex justify-between items-center px-8 py-5 border-b border-stone-200 sticky top-0 bg-white z-10">
-                <div id="modal-category"></div>
-                <button onclick="hideProjectModal()" class="text-3xl leading-none text-stone-400 hover:text-stone-900">&times;</button>
-            </div>
-
-            <div class="p-8 md:p-10">
-                <div id="modal-image-container" class="mb-8 rounded-[1.5rem] overflow-hidden bg-stone-100"></div>
-
-                <div class="flex flex-col md:flex-row md:items-start gap-x-8">
-                    <div class="flex-1">
-                        <h3 id="modal-title" class="font-display font-semibold text-4xl mb-2"></h3>
-                        <p id="modal-subtitle" class="text-stone-500 font-semibold mb-6"></p>
-                        <div id="modal-description" class="text-stone-700 leading-relaxed"></div>
-                    </div>
-
-                    <div class="md:w-72 mt-8 md:mt-0 flex-shrink-0">
-                        <div class="bg-stone-50 border border-stone-200 rounded-[1.5rem] p-6">
-                            <div class="uppercase text-xs font-extrabold tracking-widest text-stone-400 mb-3">PROJECT DETAILS</div>
-                            <div class="space-y-4 text-sm">
-                                <div>
-                                    <div class="text-stone-400 font-semibold">Client / Type</div>
-                                    <div id="modal-client" class="font-bold"></div>
-                                </div>
-                                <div>
-                                    <div class="text-stone-400 font-semibold">Year</div>
-                                    <div id="modal-year" class="font-bold"></div>
-                                </div>
-                                <div>
-                                    <div class="text-stone-400 font-semibold">Role</div>
-                                    <div id="modal-role" class="font-bold"></div>
-                                </div>
-                            </div>
-                            <div class="mt-6 pt-6 border-t border-stone-200">
-                                <a href="https://www.instagram.com/alternatefact_studios" target="_blank" rel="noopener"
-                                   class="flex items-center justify-center gap-x-2 w-full py-3 border border-stone-300 hover:border-violet-500 hover:text-violet-700 rounded-full text-sm font-bold transition">
-                                    <i class="fab fa-instagram"></i>
-                                    <span>View on Instagram</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="meta-block meta-block-right">
+      <span class="meta-label">FILE №</span>
+      <span class="meta-val" id="fileNo">A/F–0413</span>
     </div>
+  </div>
 
-    <script>
-    /* ==========================================================================
-       WATCH MOVEMENT BACKGROUND
-       A wristwatch calibre in SVG line-art: a gear train of toothed wheels
-       with crescent cutouts and jewel bearings, a mainspring barrel, a bridge
-       plate with screws, and a full escapement — escape wheel ticking in
-       discrete steps, pallet fork rocking, balance wheel oscillating with a
-       breathing hairspring. Wheels also spin with scroll; meshed pairs turn
-       in opposite directions.
-       ========================================================================== */
-    (function () {
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const slots = document.querySelectorAll('#machine-layer .gear-slot');
-        const rotors = [];
+  <h1 class="hero-title" data-testid="hero-title">
+    <span class="line"><span class="word">Alternate <em>realities,</em></span></span>
+    <span class="line"><span class="word">engineered by hand.</span></span>
+  </h1>
 
-        const TONES = {
-            violet: { stroke: '#b7a2f5', fill: 'rgba(237,233,254,0.55)' },
-            amber:  { stroke: '#f2c14e', fill: 'rgba(254,243,199,0.55)' }
-        };
-        const JEWEL = 'fill="rgba(244,63,94,0.3)" stroke="rgba(244,63,94,0.55)" stroke-width="1.5"';
+  <div class="hero-foot">
+    <p class="hero-desc reveal">
+      A workshop of AI-driven short films, concept art and scroll-stopping content.
+      We build fiction the way a watchmaker builds a movement — piece by piece,
+      brass by brass, until it ticks.
+    </p>
+    <div class="hero-cta-row reveal">
+      <a href="#work" class="btn-primary" data-testid="hero-view-work">
+        <span>View the workshop</span>
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M13.5 4.5l7.5 7.5-7.5 7.5-1.4-1.4L17.2 13H3v-2h14.2l-5.1-5.1z"/></svg>
+      </a>
+      <a href="#contact" class="btn-ghost" data-testid="hero-commission">Commission a piece</a>
+    </div>
+  </div>
 
-        const P = (cx, cy, r, a) => (cx + r * Math.cos(a)).toFixed(2) + ',' + (cy + r * Math.sin(a)).toFixed(2);
+  <div class="scroll-hint" aria-hidden="true">
+    <span>SCROLL</span>
+    <div class="scroll-hint-line"><div class="scroll-hint-dot"></div></div>
+  </div>
+</section>
 
-        // Toothed wheel outline (trapezoidal teeth, like a watch train wheel)
-        function toothedOutline(cx, cy, rTip, teeth) {
-            const rRoot = rTip * 0.86, step = Math.PI * 2 / teeth;
-            const halfTip = step * 0.16, flank = step * 0.14;
-            let d = '';
-            for (let i = 0; i < teeth; i++) {
-                const a = i * step;
-                d += (i ? 'L' : 'M') + P(cx, cy, rRoot, a - halfTip - flank) + ' ';
-                d += 'L' + P(cx, cy, rTip, a - halfTip) + ' ';
-                d += 'L' + P(cx, cy, rTip, a + halfTip) + ' ';
-                d += 'L' + P(cx, cy, rRoot, a + halfTip + flank) + ' ';
-            }
-            return d + 'Z';
-        }
+<!-- MARQUEE 1 -->
+<section class="marquee-editorial" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Alternate realities</span><span class="dot">◆</span>
+    <span><em>engineered</em> by hand</span><span class="dot">◆</span>
+    <span>a workshop of fiction</span><span class="dot">◆</span>
+    <span>brass · vapour · light</span><span class="dot">◆</span>
+    <span>Alternate realities</span><span class="dot">◆</span>
+    <span><em>engineered</em> by hand</span><span class="dot">◆</span>
+    <span>a workshop of fiction</span><span class="dot">◆</span>
+    <span>brass · vapour · light</span><span class="dot">◆</span>
+  </div>
+</section>
 
-        // Archimedean spiral (hairspring / mainspring)
-        function spiralPath(cx, cy, r0, r1, turns) {
-            const steps = Math.round(turns * 40);
-            let d = '';
-            for (let i = 0; i <= steps; i++) {
-                const p = i / steps;
-                const a = p * turns * Math.PI * 2;
-                const r = r0 + (r1 - r0) * p;
-                d += (i ? 'L' : 'M') + P(cx, cy, r, a) + ' ';
-            }
-            return d;
-        }
+<!-- MANIFESTO -->
+<section class="manifesto" id="manifesto" data-testid="manifesto-section">
+  <div class="section-eyebrow reveal">
+    <span class="eyebrow-num">§ 01</span>
+    <span class="eyebrow-label">Manifesto</span>
+  </div>
+  <h2 class="section-title reveal" data-testid="manifesto-title">
+    We are not <em>content creators.</em><br/>We are <em>fiction engineers.</em>
+  </h2>
 
-        // Train wheel: teeth + rim + crescent cutout holes + spokes + jewel bearing
-        function wheelSVG(cfg) {
-            const S = 100, c = S / 2, tone = TONES[cfg.tone || 'violet'];
-            const rTip = 47, rRim = rTip * 0.8, rHub = rTip * 0.17;
-            const holes = cfg.holes || 4;
-            let d = toothedOutline(c, c, rTip, cfg.teeth);
-            const hcR = rRim * 0.55;
-            const hr = Math.min(Math.PI * hcR / holes * 0.68, (rRim - rHub) * 0.42).toFixed(2);
-            for (let i = 0; i < holes; i++) {
-                const a = (Math.PI * 2 / holes) * i + Math.PI / holes;
-                const hx = (c + Math.cos(a) * hcR).toFixed(2), hy = (c + Math.sin(a) * hcR).toFixed(2);
-                d += ' M' + hx + ',' + hy + ' m' + hr + ',0 a' + hr + ',' + hr + ' 0 1,0 ' + (-2 * hr) + ',0 a' + hr + ',' + hr + ' 0 1,0 ' + (2 * hr) + ',0 Z';
-            }
-            return '<svg viewBox="0 0 ' + S + ' ' + S + '"><g class="rotor" data-pivot="' + c + ',' + c + '">' +
-                '<path d="' + d + '" fill="' + tone.fill + '" stroke="' + tone.stroke + '" stroke-width="1.6" fill-rule="evenodd"/>' +
-                '<circle cx="' + c + '" cy="' + c + '" r="' + rRim + '" fill="none" stroke="' + tone.stroke + '" stroke-width="1.2"/>' +
-                '<circle cx="' + c + '" cy="' + c + '" r="' + rHub + '" fill="none" stroke="' + tone.stroke + '" stroke-width="1.4"/>' +
-                '<circle cx="' + c + '" cy="' + c + '" r="' + (rHub * 0.55) + '" ' + JEWEL + '/>' +
-                '</g></svg>';
-        }
+  <div class="chapters">
+    <article class="chapter reveal" data-testid="chapter-01">
+      <div class="chapter-head">
+        <span class="chapter-idx">01</span>
+        <h3>Ignition</h3>
+      </div>
+      <p>Every project begins with a spark — a thought that refuses to sit still. We stoke it until it becomes pressure, and pressure until it becomes motion. Nothing leaves the workshop cold.</p>
+    </article>
+    <article class="chapter reveal" data-testid="chapter-02">
+      <div class="chapter-head">
+        <span class="chapter-idx">02</span>
+        <h3>Movement</h3>
+      </div>
+      <p>Story is a mechanism. Characters are gears, tensions are springs, scenes are the escapement. We tune each part until the whole ticks in the audience's chest.</p>
+    </article>
+    <article class="chapter reveal" data-testid="chapter-03">
+      <div class="chapter-head">
+        <span class="chapter-idx">03</span>
+        <h3>Vapour</h3>
+      </div>
+      <p>What remains is atmosphere. The steam a good film leaves in the room after it ends. We chase it obsessively — because that is the part people carry home.</p>
+    </article>
+    <article class="chapter reveal" data-testid="chapter-04">
+      <div class="chapter-head">
+        <span class="chapter-idx">04</span>
+        <h3>Signature</h3>
+      </div>
+      <p>Then we sign the plate. Every piece leaves our workshop with a small, deliberate imperfection — a fingerprint. Machines that feel human. Fiction that feels true.</p>
+    </article>
+  </div>
+</section>
 
-        // Mainspring barrel: toothed drum containing a coiled spring
-        function barrelSVG() {
-            const S = 100, c = S / 2, tone = TONES.violet;
-            return '<svg viewBox="0 0 ' + S + ' ' + S + '"><g class="rotor" data-pivot="' + c + ',' + c + '">' +
-                '<path d="' + toothedOutline(c, c, 47, 36) + '" fill="' + tone.fill + '" stroke="' + tone.stroke + '" stroke-width="1.4"/>' +
-                '<circle cx="' + c + '" cy="' + c + '" r="38" fill="none" stroke="' + tone.stroke + '" stroke-width="1.2"/>' +
-                '<path d="' + spiralPath(c, c, 6, 35, 4.5) + '" fill="none" stroke="' + tone.stroke + '" stroke-width="1.6" stroke-linecap="round"/>' +
-                '<circle cx="' + c + '" cy="' + c + '" r="4.5" ' + JEWEL + '/>' +
-                '</g></svg>';
-        }
+<!-- WORK -->
+<section class="work" id="work" data-testid="work-section">
+  <div class="section-eyebrow reveal">
+    <span class="eyebrow-num">§ 02</span>
+    <span class="eyebrow-label">Recent Movements</span>
+  </div>
+  <h2 class="section-title reveal">Selected <em>work</em>, <br/>fresh off the bench.</h2>
 
-        // Escape wheel: hooked, pointed teeth (ticks forward in steps)
-        function escapeSVG(cfg) {
-            const S = 100, c = S / 2, tone = TONES.amber;
-            const teeth = cfg.teeth, rTip = 46, rRoot = 32, step = Math.PI * 2 / teeth;
-            let d = '';
-            for (let i = 0; i < teeth; i++) {
-                const a = i * step;
-                d += (i ? 'L' : 'M') + P(c, c, rRoot, a - step * 0.55) + ' ';
-                d += 'L' + P(c, c, rTip, a) + ' ';
-                d += 'L' + P(c, c, rRoot, a + step * 0.08) + ' ';
-            }
-            d += 'Z';
-            let spokes = '';
-            for (let i = 0; i < 4; i++) {
-                const a = (Math.PI / 2) * i + Math.PI / 4;
-                spokes += '<line x1="' + P(c, c, 5, a).replace(',', '" y1="') + '" x2="' + P(c, c, rRoot - 2, a).replace(',', '" y2="') + '" stroke="' + tone.stroke + '" stroke-width="1.4"/>';
-            }
-            return '<svg viewBox="0 0 ' + S + ' ' + S + '"><g class="rotor" data-pivot="' + c + ',' + c + '">' +
-                '<path d="' + d + '" fill="' + tone.fill + '" stroke="' + tone.stroke + '" stroke-width="1.5"/>' +
-                '<circle cx="' + c + '" cy="' + c + '" r="' + (rRoot - 2) + '" fill="none" stroke="' + tone.stroke + '" stroke-width="1"/>' +
-                spokes +
-                '<circle cx="' + c + '" cy="' + c + '" r="4" ' + JEWEL + '/>' +
-                '</g></svg>';
-        }
+  <div class="work-grid">
 
-        // Pallet fork: anchor with two jeweled pallets and a forked lever
-        function forkSVG() {
-            const tone = TONES.violet;
-            return '<svg viewBox="0 0 100 160"><g class="rotor" data-pivot="50,46">' +
-                '<circle cx="50" cy="46" r="7" fill="' + tone.fill + '" stroke="' + tone.stroke + '" stroke-width="1.6"/>' +
-                '<circle cx="50" cy="46" r="2.6" ' + JEWEL + '/>' +
-                '<path d="M50,46 L22,104 M50,46 L78,104" fill="none" stroke="' + tone.stroke + '" stroke-width="3" stroke-linecap="round"/>' +
-                '<rect x="16" y="100" width="10" height="16" rx="2" transform="rotate(24 21 108)" ' + JEWEL + '/>' +
-                '<rect x="74" y="100" width="10" height="16" rx="2" transform="rotate(-24 79 108)" ' + JEWEL + '/>' +
-                '<path d="M50,46 L50,14 M40,4 L50,16 L60,4" fill="none" stroke="' + tone.stroke + '" stroke-width="2.6" stroke-linecap="round"/>' +
-                '</g></svg>';
-        }
+    <a href="#" class="work-card work-card--tall reveal" data-testid="work-awakening">
+      <div class="work-frame">
+        <img src="./assets/awakening.jpg" alt="The Awakening" loading="lazy" />
+        <div class="work-spotlight"></div>
+      </div>
+      <div class="work-meta">
+        <span class="work-num">№ 01</span>
+        <div class="work-info">
+          <h3>The Awakening</h3>
+          <p>AI short film · 3:42 · 2025</p>
+        </div>
+        <span class="work-arrow" aria-hidden="true">↗</span>
+      </div>
+    </a>
 
-        // Balance wheel with breathing hairspring
-        function balanceSVG() {
-            const S = 100, c = S / 2, tone = TONES.violet;
-            let screws = '';
-            for (let i = 0; i < 6; i++) {
-                const a = (Math.PI * 2 / 6) * i;
-                screws += '<circle cx="' + (c + Math.cos(a) * 42).toFixed(1) + '" cy="' + (c + Math.sin(a) * 42).toFixed(1) + '" r="2.4" fill="' + tone.stroke + '"/>';
-            }
-            return '<svg viewBox="0 0 ' + S + ' ' + S + '">' +
-                '<g class="rotor" data-pivot="' + c + ',' + c + '">' +
-                '<circle cx="' + c + '" cy="' + c + '" r="42" fill="none" stroke="' + tone.stroke + '" stroke-width="4.5"/>' +
-                '<path d="M' + (c - 42) + ',' + c + ' L' + (c + 42) + ',' + c + ' M' + c + ',' + (c - 42) + ' L' + c + ',' + (c + 42) + '" stroke="' + tone.stroke + '" stroke-width="2"/>' +
-                screws +
-                '</g>' +
-                '<g class="spring" data-pivot="' + c + ',' + c + '">' +
-                '<path d="' + spiralPath(c, c, 4, 30, 5) + '" fill="none" stroke="' + tone.stroke + '" stroke-width="1.2" stroke-linecap="round"/>' +
-                '</g>' +
-                '<circle cx="' + c + '" cy="' + c + '" r="3.4" ' + JEWEL + '/>' +
-                '</svg>';
-        }
+    <a href="#" class="work-card reveal" data-testid="work-onechoice">
+      <div class="work-frame">
+        <img src="./assets/one-choice.jpg" alt="One Choice" loading="lazy" />
+        <div class="work-spotlight"></div>
+      </div>
+      <div class="work-meta">
+        <span class="work-num">№ 02</span>
+        <div class="work-info">
+          <h3>One Choice</h3>
+          <p>Branded narrative · 60s · 2025</p>
+        </div>
+        <span class="work-arrow" aria-hidden="true">↗</span>
+      </div>
+    </a>
 
-        // Static bridge plate with polished screws and a jewel
-        function bridgeSVG() {
-            const tone = TONES.violet;
-            const screw = (x, y) =>
-                '<circle cx="' + x + '" cy="' + y + '" r="7" fill="rgba(255,255,255,0.6)" stroke="' + tone.stroke + '" stroke-width="1.6"/>' +
-                '<line x1="' + (x - 4) + '" y1="' + y + '" x2="' + (x + 4) + '" y2="' + y + '" stroke="' + tone.stroke + '" stroke-width="1.6" transform="rotate(40 ' + x + ' ' + y + ')"/>';
-            return '<svg viewBox="0 0 260 100">' +
-                '<path d="M24,72 C10,58 12,34 30,24 L212,10 C236,8 252,26 250,48 C248,70 230,84 208,82 L52,88 C40,88 32,82 24,72 Z"' +
-                ' fill="rgba(245,243,255,0.5)" stroke="' + tone.stroke + '" stroke-width="1.6"/>' +
-                screw(42, 56) + screw(224, 44) +
-                '<circle cx="132" cy="48" r="6" ' + JEWEL + '/>' +
-                '<circle cx="132" cy="48" r="13" fill="none" stroke="' + tone.stroke + '" stroke-width="1.2"/>' +
-                '</svg>';
-        }
+    <a href="#" class="work-card reveal" data-testid="work-beyondlagos">
+      <div class="work-frame">
+        <img src="./assets/beyond-lagos.jpg" alt="Beyond Lagos" loading="lazy" />
+        <div class="work-spotlight"></div>
+      </div>
+      <div class="work-meta">
+        <span class="work-num">№ 03</span>
+        <div class="work-info">
+          <h3>Beyond Lagos</h3>
+          <p>Speculative documentary · 2024</p>
+        </div>
+        <span class="work-arrow" aria-hidden="true">↗</span>
+      </div>
+    </a>
 
-        slots.forEach(slot => {
-            const cfg = JSON.parse(slot.dataset.part);
-            let svg = '';
-            if (cfg.kind === 'wheel') svg = wheelSVG(cfg);
-            else if (cfg.kind === 'barrel') svg = barrelSVG();
-            else if (cfg.kind === 'escape') svg = escapeSVG(cfg);
-            else if (cfg.kind === 'fork') svg = forkSVG();
-            else if (cfg.kind === 'balance') svg = balanceSVG();
-            else if (cfg.kind === 'bridge') svg = bridgeSVG();
-            slot.innerHTML = svg;
-            const rotor = slot.querySelector('.rotor');
-            if (rotor) rotors.push({ el: rotor, cfg, pivot: rotor.dataset.pivot });
-            const spring = slot.querySelector('.spring');
-            if (spring) rotors.push({ el: spring, cfg: { kind: 'spring', freq: cfg.freq }, pivot: spring.dataset.pivot });
-        });
+    <a href="#" class="work-card work-card--wide reveal" data-testid="work-conceptart">
+      <div class="work-frame">
+        <img src="./assets/concept-art.jpg" alt="Concept Art Series" loading="lazy" />
+        <div class="work-spotlight"></div>
+      </div>
+      <div class="work-meta">
+        <span class="work-num">№ 04</span>
+        <div class="work-info">
+          <h3>Concept Art Series</h3>
+          <p>Illustration · Ongoing · 24 plates</p>
+        </div>
+        <span class="work-arrow" aria-hidden="true">↗</span>
+      </div>
+    </a>
 
-        const easeOut = x => 1 - Math.pow(1 - Math.min(x, 1), 3);
-        let t = 0;
-        function frame() {
-            t += 0.016;
-            const y = window.scrollY || 0;
-            const idleOn = reducedMotion ? 0 : 1;
-            rotors.forEach(rt => {
-                const k = rt.cfg.kind, pv = rt.pivot;
-                let tf = '';
-                if (k === 'wheel' || k === 'barrel') {
-                    const a = y * rt.cfg.speed + t * (rt.cfg.idle || 0) * idleOn;
-                    tf = 'rotate(' + a.toFixed(2) + ' ' + pv.replace(',', ' ') + ')';
-                } else if (k === 'escape') {
-                    // tick forward in discrete steps, like a real escapement
-                    const stepA = 360 / rt.cfg.teeth;
-                    const ph = t * rt.cfg.freq * idleOn;
-                    const a = (Math.floor(ph) + easeOut((ph - Math.floor(ph)) * 3.2)) * stepA + y * rt.cfg.speed;
-                    tf = 'rotate(' + a.toFixed(2) + ' ' + pv.replace(',', ' ') + ')';
-                } else if (k === 'fork') {
-                    const a = Math.sin(t * rt.cfg.freq * Math.PI * 2) * rt.cfg.amp * idleOn;
-                    tf = 'rotate(' + a.toFixed(2) + ' ' + pv.replace(',', ' ') + ')';
-                } else if (k === 'balance') {
-                    const a = Math.sin(t * rt.cfg.freq * Math.PI * 2 + Math.PI / 2) * rt.cfg.amp * idleOn;
-                    tf = 'rotate(' + a.toFixed(2) + ' ' + pv.replace(',', ' ') + ')';
-                } else if (k === 'spring') {
-                    const s = 1 + 0.06 * Math.sin(t * rt.cfg.freq * Math.PI * 2 + Math.PI / 2) * idleOn;
-                    const p = pv.split(',');
-                    tf = 'translate(' + p[0] + ' ' + p[1] + ') scale(' + s.toFixed(3) + ') translate(-' + p[0] + ' -' + p[1] + ')';
-                }
-                rt.el.setAttribute('transform', tf);
-            });
-            requestAnimationFrame(frame);
-        }
-        requestAnimationFrame(frame);
-    })();
+  </div>
+</section>
 
-    /* Hero collage parallax */
-    (function () {
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (reducedMotion) return;
-        const layers = document.querySelectorAll('.collage-float');
-        function onScroll() {
-            const y = window.scrollY || 0;
-            layers.forEach(l => {
-                l.style.transform = 'translateY(' + (y * parseFloat(l.dataset.parallax)).toFixed(1) + 'px)';
-            });
-        }
-        window.addEventListener('scroll', onScroll, { passive: true });
-        onScroll();
-    })();
+<!-- APPROACH -->
+<section class="approach" id="approach" data-testid="approach-section">
+  <div class="section-eyebrow reveal">
+    <span class="eyebrow-num">§ 03</span>
+    <span class="eyebrow-label">The Workshop</span>
+  </div>
+  <h2 class="section-title reveal">
+    How the <em>machine</em> runs.
+  </h2>
 
-    /* Scroll progress bar + navbar background */
-    (function () {
-        const bar = document.getElementById('scroll-progress');
-        const nav = document.getElementById('navbar');
-        function onScroll() {
-            const max = document.documentElement.scrollHeight - window.innerHeight;
-            bar.style.width = (Math.min(1, window.scrollY / Math.max(1, max)) * 100).toFixed(2) + '%';
-            const solid = window.scrollY > 40;
-            nav.classList.toggle('bg-[#faf8f5]/85', solid);
-            nav.classList.toggle('backdrop-blur-xl', solid);
-            nav.classList.toggle('border-stone-200', solid);
-            nav.classList.toggle('border-transparent', !solid);
-        }
-        window.addEventListener('scroll', onScroll, { passive: true });
-        onScroll();
-    })();
+  <ol class="approach-list">
+    <li class="approach-item reveal" data-testid="approach-01">
+      <span class="approach-num">01 —</span>
+      <div>
+        <h3>Blueprint</h3>
+        <p>Story architecture, world logic, tonal calibration. Nothing is built without a drawing on the wall.</p>
+      </div>
+    </li>
+    <li class="approach-item reveal" data-testid="approach-02">
+      <span class="approach-num">02 —</span>
+      <div>
+        <h3>Cast the parts</h3>
+        <p>Characters, environments, textures. AI is the alloy; direction is the mould. We supervise every casting.</p>
+      </div>
+    </li>
+    <li class="approach-item reveal" data-testid="approach-03">
+      <span class="approach-num">03 —</span>
+      <div>
+        <h3>Assemble</h3>
+        <p>Sequence, sound, colour, grain. Motion is fitted piece by piece until the piece breathes on its own.</p>
+      </div>
+    </li>
+    <li class="approach-item reveal" data-testid="approach-04">
+      <span class="approach-num">04 —</span>
+      <div>
+        <h3>Stamp &amp; ship</h3>
+        <p>Final polish, delivery in every format the platform demands. Signed, dated, released into the world.</p>
+      </div>
+    </li>
+  </ol>
+</section>
 
-    /* Reveal-on-scroll */
-    (function () {
-        const io = new IntersectionObserver(entries => {
-            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } });
-        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-    })();
+<!-- CTA / CONTACT -->
+<section class="cta" id="contact" data-testid="contact-section">
+  <div class="cta-inner">
+    <p class="cta-eyebrow reveal">A/F · WORKSHOP OPEN</p>
+    <h2 class="cta-title reveal" data-testid="cta-title">
+      Have a reality<br/>you'd like to <em>build?</em>
+    </h2>
+    <a href="mailto:alternatefact2@gmail.com" class="cta-btn reveal" data-testid="cta-email">
+      alternatefact2@gmail.com
+      <span class="cta-btn-arr" aria-hidden="true">↗</span>
+    </a>
+    <p class="cta-sub reveal">We reply within one revolution of the flywheel — usually 48 hours.</p>
+  </div>
 
-    /* Animated counters */
-    (function () {
-        const counters = document.querySelectorAll('.counter');
-        const io = new IntersectionObserver(entries => {
-            entries.forEach(e => {
-                if (!e.isIntersecting) return;
-                io.unobserve(e.target);
-                const el = e.target;
-                const target = parseInt(el.dataset.target, 10);
-                const suffix = el.dataset.suffix || '';
-                const start = performance.now(), dur = 1600;
-                (function tick(now) {
-                    const p = Math.min(1, (now - start) / dur);
-                    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))) + suffix;
-                    if (p < 1) requestAnimationFrame(tick);
-                })(start);
-            });
-        }, { threshold: 0.6 });
-        counters.forEach(c => io.observe(c));
-    })();
+  <footer class="foot">
+    <div class="foot-col">
+      <span class="foot-label">© 2026</span>
+      <span class="foot-val">Alternatefact Studios</span>
+    </div>
+    <div class="foot-col">
+      <span class="foot-label">SIGNED</span>
+      <span class="foot-val" id="footSig">A/F — the workshop</span>
+    </div>
+    <div class="foot-col foot-col-right">
+      <a href="#top" class="foot-back" data-testid="footer-back-top">
+        Back to ignition
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M11 20V7.83l-5.59 5.59L4 12l8-8 8 8-1.41 1.42L13 7.83V20z"/></svg>
+      </a>
+    </div>
+  </footer>
+</section>
 
-    /* Mobile menu */
-    (function () {
-        const btn = document.getElementById('mobile-menu-btn');
-        const menu = document.getElementById('mobile-menu');
-        btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
-            const icon = btn.querySelector('i');
-            icon.classList.toggle('fa-bars', menu.classList.contains('hidden'));
-            icon.classList.toggle('fa-times', !menu.classList.contains('hidden'));
-        });
-        menu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                menu.classList.add('hidden');
-                btn.querySelector('i').classList.remove('fa-times');
-                btn.querySelector('i').classList.add('fa-bars');
-            });
-        });
-    })();
+<!-- Scripts (self-hosted) -->
+<script src="./assets/vendor/gsap.min.js"></script>
+<script src="./assets/vendor/ScrollTrigger.min.js"></script>
+<script src="./assets/vendor/lenis.min.js"></script>
+<script type="module" src="./machine.js"></script>
+<script src="./main.js"></script>
 
-    /* Portfolio filters */
-    (function () {
-        const filterBtns = document.querySelectorAll('#portfolio-filters button');
-        const cards = document.querySelectorAll('#portfolio-grid .pin-card');
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const filter = btn.dataset.filter;
-                cards.forEach(card => {
-                    card.style.display = (filter === 'all' || card.dataset.category === filter) ? '' : 'none';
-                });
-            });
-        });
-    })();
-
-    /* Project data + modal */
-    const projects = [
-        {
-            category: "SHORT FILM",
-            badge: "bg-amber-100 text-amber-700",
-            title: "The Awakening",
-            subtitle: "A film by Olukayode • Alternatefact Studios",
-            image: "assets/awakening.jpg",
-            description: "<p>Some powers were never meant to sleep. On a rooftop above a burning skyline, a man comes face to face with the thing the past left behind. <em>The past never dies — it waits.</em></p><p>A cinematic AI creature feature: every frame generated, graded and cut in-house with our AI production pipeline, from creature design to the final sound mix.</p>",
-            client: "Original Production",
-            year: "2025",
-            role: "Writer, Director, AI Cinematography, Edit & Sound"
-        },
-        {
-            category: "SHORT FILM",
-            badge: "bg-violet-100 text-violet-700",
-            title: "Beyond Lagos",
-            subtitle: "A film by Olukayode • African Futures",
-            image: "assets/beyond-lagos.jpg",
-            description: "<p>Some dreams don't end at the horizon. An Afro-futurist space epic that launches African stories past the stratosphere — astronauts over a glowing Lagos skyline, ambition written in rocket fire.</p><p>Concept, poster art and film built with our generative pipeline, blending hard sci-fi scale with grounded, human storytelling.</p>",
-            client: "Original Production",
-            year: "2025",
-            role: "Writer, Director, AI Visuals, Poster Design"
-        },
-        {
-            category: "CONCEPT ART",
-            badge: "bg-sky-100 text-sky-700",
-            title: "Adorned",
-            subtitle: "Concept Series • 2025",
-            image: "assets/concept-art.jpg",
-            description: "<p>A character design study in impossible couture — coral, beadwork and machine-precision ornament rendered with fashion-editorial polish.</p><p>Part of our ongoing concept-art practice: world building, character design and key art for films, brands and exhibitions.</p>",
-            client: "Personal / Concept Series",
-            year: "2025",
-            role: "Concept Artist, AI Direction"
-        },
-        {
-            category: "CAMPAIGN",
-            badge: "bg-rose-100 text-rose-700",
-            title: "One Choice",
-            subtitle: "Public Awareness Campaign",
-            image: "assets/one-choice.jpg",
-            description: "<p>One choice can change everything. A public-awareness campaign against drug abuse — a figure cracking apart like dried clay, a community holding the light behind him, and a message of hope: <em>recovery is possible, you are stronger than you think.</em></p><p>Art direction, poster design and full campaign visuals produced end-to-end in our studio.</p>",
-            client: "Public Awareness",
-            year: "2025",
-            role: "Art Direction, Campaign Design"
-        }
-    ];
-
-    function showProjectModal(i) {
-        const project = projects[i];
-        const modal = document.getElementById('project-modal');
-        document.getElementById('modal-category').innerHTML = '<span class="px-3 py-1 text-[11px] font-extrabold tracking-wider rounded-full ' + project.badge + '">' + project.category + '</span>';
-        document.getElementById('modal-title').textContent = project.title;
-        document.getElementById('modal-subtitle').textContent = project.subtitle;
-        document.getElementById('modal-description').innerHTML = project.description;
-        document.getElementById('modal-client').textContent = project.client;
-        document.getElementById('modal-year').textContent = project.year;
-        document.getElementById('modal-role').textContent = project.role;
-        document.getElementById('modal-image-container').innerHTML =
-            '<img src="' + project.image + '" alt="' + project.title + '" class="w-full max-h-[52vh] object-contain">';
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function hideProjectModal() {
-        const modal = document.getElementById('project-modal');
-        modal.classList.remove('flex');
-        modal.classList.add('hidden');
-        document.body.style.overflow = '';
-    }
-
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && !document.getElementById('project-modal').classList.contains('hidden')) hideProjectModal();
-    });
-
-    /* Contact form (front-end demo) */
-    (function () {
-        const form = document.getElementById('contact-form');
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const btn = form.querySelector('button[type="submit"]');
-            const originalText = btn.textContent;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
-            btn.disabled = true;
-            setTimeout(() => {
-                btn.innerHTML = 'Message Sent! ✓';
-                btn.style.background = '#059669';
-                setTimeout(() => {
-                    form.reset();
-                    btn.innerHTML = originalText;
-                    btn.style.background = '';
-                    btn.disabled = false;
-                    const successMsg = document.createElement('div');
-                    successMsg.className = 'mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-[1.25rem] text-emerald-700 text-sm font-semibold text-center';
-                    successMsg.innerHTML = 'Thank you! We\'ll reply within 24 hours. In the meantime, follow us on <a href="https://www.instagram.com/alternatefact_studios" class="underline">Instagram</a> for daily inspiration.';
-                    form.appendChild(successMsg);
-                    setTimeout(() => {
-                        successMsg.style.transition = 'all 0.4s ease';
-                        successMsg.style.opacity = '0';
-                        setTimeout(() => successMsg.remove(), 400);
-                    }, 5500);
-                }, 2200);
-            }, 1600);
-        });
-    })();
-
-    /* Smooth scroll for anchor links */
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            const href = this.getAttribute('href');
-            if (href === '#top') { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-            const target = document.querySelector(href);
-            if (target) {
-                e.preventDefault();
-                const offsetPosition = target.getBoundingClientRect().top + window.scrollY - 80;
-                window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-            }
-        });
-    });
-    </script>
 </body>
 </html>

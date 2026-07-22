@@ -1,50 +1,30 @@
 # Alternatefact Studios — Website
 
-Portfolio site for Alternatefact Studios: AI short films, UGC, concept art and content production.
+"A workshop of alternate realities, engineered by hand." Portfolio site for
+Alternatefact Studios: AI short films, concept art and scroll-stopping content.
 
-## Design
+## Architecture
 
-Light, editorial "designer" aesthetic on a warm paper background:
-
-- **Fonts** — Fraunces (display serif, with italic accents) + Manrope (body/UI), self-hosted.
-- **Watch-movement background** — a wristwatch calibre drawn as SVG in a fixed
-  layer behind the page: toothed train wheels with crescent cutouts and ruby
-  jewel bearings, a mainspring barrel with a coiled spring, a bridge plate with
-  screws, and a full escapement (escape wheel ticking in discrete steps, pallet
-  fork rocking, balance wheel oscillating with a breathing hairspring). Wheels
-  also spin with scroll; meshed pairs turn in opposite directions. Configured
-  via `data-part` JSON on the `.gear-slot` elements inside `#machine-layer` in
-  `index.html` (`speed` = degrees per scrolled pixel, `idle` = degrees per
-  second, `freq` = escapement beats per second).
-- **Hero collage** — the studio's real artwork as tilted, overlapping cards with
-  per-card scroll parallax (`data-parallax` on `.collage-float`).
-- **Pinterest-style portfolio** — masonry columns (`columns-*` utilities) with
-  natural image heights, pill filters, and soft-shadow cards.
-- Scroll-reveal animations, animated counters, marquee strip, and pastel
-  tilted cards throughout. All motion respects `prefers-reduced-motion`.
+- **`index.html`** — page structure and copy.
+- **`styles.css`** — the workshop/editorial styling (Fraunces + Manrope + IBM Plex Mono).
+- **`machine.js`** — the scroll-linked **3D machinery** (Three.js/WebGL): a brass
+  steam engine with working piston, crank and steam particles (hero), a clockwork
+  with pendulum and interlocking gears (mid-page), and a floating gear assembly
+  (bottom). The camera dollies down through the machines as you scroll.
+- **`main.js`** — Lenis smooth scrolling, GSAP/ScrollTrigger reveals, scroll
+  progress rail, chapter tracker, work-card spotlight.
 
 ## Fully self-contained
 
-No CDNs. Tailwind is compiled into `assets/tailwind.css`; fonts and Font Awesome
-are self-hosted under `assets/`. Pure static HTML/CSS/JS — host anywhere
-(GitHub Pages, Netlify, Vercel, any web server).
+All dependencies are vendored — no CDNs:
 
-### Rebuilding the Tailwind CSS
+- `assets/vendor/three/` — Three.js (ES module) + RoomEnvironment addon,
+  wired via the import map in `index.html`
+- `assets/vendor/gsap.min.js`, `ScrollTrigger.min.js`, `lenis.min.js`
+- `assets/fonts.css` + `assets/fonts/` — Fraunces, Manrope, IBM Plex Mono
+- `assets/*.jpg` — studio artwork, web-optimized
 
-Only needed if you add new Tailwind utility classes to `index.html`:
-
-```bash
-npm install tailwindcss@3
-npx tailwindcss -i tw-input.css -o assets/tailwind.css --content index.html --minify
-```
-
-where `tw-input.css` contains:
-
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
+Host anywhere that serves static files (GitHub Pages, Netlify, Vercel, …).
 
 ## Local preview
 
@@ -52,3 +32,6 @@ where `tw-input.css` contains:
 python3 -m http.server 8000
 # open http://localhost:8000
 ```
+
+Serving over HTTP is required — `machine.js` is an ES module, which browsers
+refuse to load from `file://` URLs.
